@@ -2,3 +2,4 @@
 .godot/
 *.tmp
 export/
+smoke_out.txt
