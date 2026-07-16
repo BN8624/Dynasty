@@ -1,8 +1,8 @@
 # PROJECT_CANON.md
 
 **Project codename:** `DYNASTY`  
-**Canon version:** `0.4.1`  
-**Status:** `PRODUCT_DIRECTION_AND_FIRST_PLAYABLE_LOCKED`
+**Canon version:** `0.5`  
+**Status:** `FIRST_PLAYABLE_PROMOTED_THREE_GENERATION_PROTOTYPE_LOCKED`
 
 This file is the project-specific source of truth for durable product identity, commercial direction, gameplay contracts, protected boundaries, and first-playable validation.
 
@@ -185,7 +185,9 @@ External generative AI MUST NOT be used at runtime.
 
 # 3. Long Campaign Direction
 
-Sections 3 and 4 define the intended commercial product. They do not authorize implementation beyond the first-playable scope lock.
+Sections 3 and 4 define the intended commercial product.
+
+The promoted first playable authorizes only the bounded three-generation prototype in Section 24. These sections do not authorize implementation of the full commercial campaign.
 
 ## 3.1 Campaign Scale
 
@@ -196,6 +198,13 @@ The intended full campaign:
 - Supports rise, stagnation, decline, succession crisis, and recovery.
 - Creates duration through systemic variation rather than hundreds of unrelated handcrafted events.
 - Remains strategically meaningful without requiring a large navigable map or tactical warfare.
+
+A generation MUST use a bounded variable duration:
+
+- Succession MUST NOT occur before a minimum preparation period.
+- After the minimum period, age, health, events, abdication, or forced removal MAY trigger succession.
+- A maximum generation length MUST force succession if no earlier trigger occurs.
+- The exact minimum and maximum turn counts are mutable balance values.
 
 ## 3.2 Internal Family Structure
 
@@ -234,7 +243,35 @@ Relations with other houses SHOULD accumulate through marriage, debt, aid, betra
 
 External politics support the family game. They MUST NOT replace it as the primary focus.
 
-## 3.5 Campaign Completion
+## 3.5 Intergenerational Memory
+
+Past consequences MUST be preserved through a layered memory model.
+
+Permanent legal or structural state includes:
+
+- Bloodline.
+- Marriage.
+- Children.
+- Succession rights.
+- Branch houses.
+- Claims.
+- Property and territorial ownership.
+
+Major house events MAY persist across several generations, including:
+
+- Murder.
+- Betrayal.
+- Exile.
+- Disinheritance.
+- Forced marriage.
+- Rescue of the house.
+- Seizure of succession rights.
+
+Personal emotions such as affection, jealousy, fear, and minor resentment SHOULD weaken through time and death.
+
+The chronicle MAY preserve more history than the active simulation. The number of memories directly affecting current behavior MUST remain bounded and explainable.
+
+## 3.6 Campaign Completion
 
 Campaign evaluation MUST prioritize:
 
@@ -297,9 +334,9 @@ It SHOULD display bloodlines, marriages, children, deceased members, branches, c
 
 ## 5.1 Role
 
-The first playable is the smallest proof of the intended commercial product.
+The first playable is the promoted smallest proof of the intended commercial product.
 
-It MUST validate:
+It remains a protected regression scenario and MUST continue to validate:
 
 - A house-office management surface.
 - A character-centered family dilemma.
@@ -337,6 +374,14 @@ The first playable MUST have:
 - Final resolution on turn 12.
 - A target first-run duration of 10–20 minutes.
 - A target replay duration of 5–15 minutes.
+
+## 5.5 Promotion Status
+
+Human play review confirmed that the 12-turn loop is enjoyable despite placeholder presentation, no finished character portraits, and a limited number of choices.
+
+This evidence promotes the first playable and authorizes the bounded three-generation prototype in Section 24.
+
+Promotion does not prove that the game remains interesting for several generations or for the intended 15–30 hour commercial campaign.
 
 ---
 
@@ -1511,7 +1556,7 @@ defeat_estate_lost:
     estate_count <= 0
 
 defeat_insolvent:
-    wealth <= -10
+    wealth <= -30
 
 defeat_legitimacy_collapse:
     legitimacy <= 0
@@ -1522,9 +1567,6 @@ defeat_no_eligible_heir:
 defeat_unresolved_civil_war:
     turn == 12 and civil_war_active == true
 ```
-
-> **Balance revision (2026-07-16, canon 0.4 → 0.4.1):** `defeat_insolvent` threshold revised from `wealth <= -30` to `wealth <= -10` under Mutable Balance (23.2).
-> Cause: every action requires wealth at least equal to its cost, so actions cannot drive wealth below 0; the only unconditional wealth-reducing events are `succession_civil_war` (−20), `share_income` (−10), `concede_revenue` (−15), `kin_revolt` (−10), and `tax_resistance` (−10), and the civil-war prerequisite `cohesion < 35` forces at least four `reorganize_estate` uses (+40 wealth). The maximum legal drain therefore cannot reach −30; a 120-run varied-strategy batch measured a minimum final wealth of −2. With the revised threshold, `defeat_insolvent` is legally reachable (regression script `S9_defeat_insolvent` in `tests/validate.gd`).
 
 ## 17.3 Basic Victory
 
@@ -1729,7 +1771,7 @@ Requirements:
 
 ---
 
-# 21. First-Playable Acceptance
+# 21. First-Playable Acceptance and Promotion
 
 The first playable is technically complete only when the canonical initial fixture executes the locked scenario contracts through the real game flow, including the house office, family council, succession resolution, genealogy support, and terminal result.
 
@@ -1758,36 +1800,34 @@ At least 100 varied legal complete runs MUST finish with:
 - Reproducible state history for identical inputs.
 - Succession evidence equal to the modifiers actually applied.
 
-## 21.3 Human Promotion Gate
+## 21.3 Human Promotion Result
 
-Technical completion does not authorize scope expansion. Human play review MUST evaluate:
+The human promotion gate has passed.
 
-1. Does choosing between Aldren and Rowen create a real family dilemma?
-2. Does the known turn-6 death create preparation pressure?
-3. Do two action points force meaningful sacrifice?
-4. Does succession feel causally connected to prior choices?
-5. Are marriage and kin management both useful and dangerous?
-6. Is the house office understandable and does it feel like operating a dynasty rather than reading a spreadsheet?
-7. Does the family council make the conflict feel centered on people rather than on a generic event popup?
-8. Does failure create a desire to retry with another family strategy?
+Manual play confirmed:
 
-Promotion requires positive evidence for questions 1, 3, 4, 6, 7, and 8.
+- The family-political choice loop is enjoyable.
+- Consequences accumulate in a way that supports interest in the succession result.
+- The house-office and family-council flow is usable.
+- The experience remains enjoyable without finished portraits or a large choice count.
 
-If the gate fails, revise the locked loop or reconsider the project. Do not add major systems to compensate.
+The first playable is therefore promoted as the protected foundation for the next prototype.
+
+This result validates the short scenario only. It does not validate multi-generation variety, intergenerational consequence, or long-campaign pacing.
 
 ---
 
-# 22. Scope Lock Before Promotion
+# 22. Scope Lock After First-Playable Promotion
 
-Before the human promotion gate passes, the project MUST NOT implement:
+The only authorized expansion beyond the protected first playable is the bounded three-generation prototype in Section 24.
 
-- The full multi-generation campaign.
-- Generated descendants or additional named Arven characters.
-- Branch-house simulation.
-- The social-rank progression ladder.
-- Dynasty-legacy scoring.
-- A generalized long-campaign dilemma generator.
-- A world map.
+The project MUST NOT yet implement:
+
+- The full 15–30 hour commercial campaign.
+- More than three playable generations.
+- The complete social-rank ladder.
+- A generalized kingdom or world simulation.
+- A large world map.
 - Warfare.
 - Armies.
 - Tactical combat.
@@ -1796,24 +1836,27 @@ Before the human promotion gate passes, the project MUST NOT implement:
 - Religion simulation.
 - Culture simulation.
 - Technology trees.
-- Additional named houses.
+- Broad international diplomacy.
 - Full character-life simulation.
-- Rule editors.
-- Content editors.
+- A general-purpose rule editor.
+- A content-authoring suite.
 - Mod support.
 - Multiplayer.
 - Mobile targets.
 - Console targets.
 - Steam achievements.
 - Steam cloud saves.
-- Final art production.
 - Voice acting.
 - Runtime generative AI.
 - Free-text negotiation.
+- A combinatorial portrait generator.
+- Age-progression portrait sets.
+- Emotion-expression portrait sets.
+- Final art production at scale.
 
-Sections 3 and 4 define the future product direction only. They MUST guide first-playable architecture and presentation but MUST NOT expand the current implementation beyond the locked scenario.
+The fixed `THE LAST WINTER` scenario MUST remain playable and regression-safe while Section 24 is implemented.
 
-Temporary UI, placeholder portraits, placeholder heraldry, basic fonts, and minimal audio are allowed only when they support first-playable validation and have safe commercial-use provenance.
+Temporary silhouettes, color-coded character cards, heraldic marks, basic icons, placeholder fonts, and minimal audio are permitted when they support the three-generation validation and have safe commercial-use provenance.
 
 ---
 
@@ -1832,7 +1875,8 @@ The following contracts are protected and require an explicit canon revision to 
 - State semantics, fixture meaning, and turn ordering in Sections 8–10.
 - The meaning and ordering of actions, events, succession, and terminal resolution in Sections 11–17.
 - UI, chronicle, and determinism contracts in Sections 18–20.
-- The human promotion gate and pre-promotion scope lock in Sections 21 and 22.
+- The first-playable promotion result and post-promotion scope lock in Sections 21 and 22.
+- The bounded three-generation prototype contract in Section 24.
 
 ## 23.2 Mutable Balance
 
@@ -1849,6 +1893,229 @@ Dedicated balance work MAY change:
 - Dilemma selection weights and frequency.
 - UI layout and presentation within the protected hierarchy.
 - Chronicle wording.
+- Three-generation minimum and maximum turn bounds.
+- Personal-emotion decay rates.
+- Active memory limits.
+- Prototype rank thresholds and effect magnitudes.
 
 Balance changes MUST preserve protected meaning and include reproducible simulation or human-play evidence.
 
+---
+
+# 24. Three-Generation Prototype Contract
+
+## 24.1 Purpose
+
+The next prototype MUST test whether the validated short-scenario experience remains interesting across three generations.
+
+Its primary question is:
+
+> Do family-political choices remain meaningful when rights, major events, and family structure persist through several successions?
+
+The prototype MUST preserve `THE LAST WINTER` as a fixed regression scenario. It MAY use a separate campaign entry point or a compatible continuation architecture, but it MUST NOT change the canonical first-playable outcomes.
+
+## 24.2 Validated Fun Priority
+
+The three-generation prototype MUST preserve this priority:
+
+1. Family-political choices.
+2. Accumulation of consequences.
+3. Anticipation of succession results.
+4. Pressure from limited actions.
+
+Additional systems MUST support this order rather than displace it.
+
+## 24.3 Campaign Boundary
+
+The prototype MUST:
+
+- Contain exactly three playable generations.
+- Support a complete sequence from the first generation through the third-generation legacy result.
+- Provide at least two to three hours of intended human play.
+- End with one explainable dynasty-legacy evaluation.
+- End the third playable generation at its succession; record the next successor without opening a fourth playable generation.
+- Remain a prototype of the long campaign rather than the full commercial campaign.
+
+## 24.4 Generation Duration and Succession
+
+Each generation MUST have a bounded variable length.
+
+Requirements:
+
+- A minimum turn count MUST guarantee preparation time.
+- Succession MUST NOT occur before the minimum turn count.
+- After the minimum, age, health, events, abdication, or forced removal MAY cause succession.
+- A maximum turn count MUST force succession.
+- The player MUST be able to understand why succession occurred.
+- Each of the three playable generations MUST end in succession.
+- The third succession MUST end the prototype and feed the final legacy evaluation.
+- The three successions MUST NOT be identical fixed copies of the turn-6 death in `THE LAST WINTER`.
+
+Exact minimum and maximum turn counts are mutable balance values.
+
+## 24.5 Intergenerational State
+
+The following MUST persist across generations when created:
+
+- Bloodline.
+- Marriage.
+- Children.
+- Succession rights.
+- Branch-house membership.
+- Claims.
+- Property or territorial ownership.
+
+The prototype MUST create enough family variation for later generations to have materially different structures and succession problems.
+
+The exact character-generation method is mutable, but it MUST be deterministic for identical seeds and inputs.
+
+## 24.6 Major House Memory
+
+Major events MUST be able to influence later generations.
+
+Supported long-lived event meanings MUST include at least:
+
+- Betrayal.
+- Exile.
+- Disinheritance.
+- Forced marriage.
+- Rescue of the house.
+- Seizure or restoration of succession rights.
+
+At least one first-generation decision MUST become a causal factor in a second- or third-generation dilemma.
+
+Major memories MUST expose their original event and affected people or branches.
+
+## 24.7 Personal Emotion Decay
+
+Personal emotions MAY include loyalty, affection, resentment, jealousy, fear, and ambition.
+
+They MUST NOT all remain permanently active.
+
+Requirements:
+
+- Personal emotions SHOULD weaken through time.
+- Death of the original participants SHOULD remove or transform purely personal emotions.
+- Major house memories and legal claims MAY create new emotions in descendants.
+- The active emotion and memory set affecting one character MUST remain bounded and inspectable.
+
+Descendants MUST NOT inherit an ancestor's emotion as an unexplained copied number.
+
+## 24.8 Family Dilemmas
+
+Dilemmas MUST arise from current family structure, rights, remembered events, and active relationships.
+
+The prototype MUST include dilemmas involving several of the following:
+
+- Competing heirs.
+- Marriage obligations.
+- Branch-house claims.
+- Property division.
+- Guardianship or regency.
+- Disinheritance.
+- Reconciliation.
+- Exile or return.
+- Conflicting legal and emotional duties.
+
+A choice variation that changes only numeric effects without changing who benefits, who loses, or what future risk is created does not count as a distinct dilemma structure.
+
+## 24.9 Prototype Rank Band
+
+The three-generation prototype MUST implement only a narrow three-position rank band:
+
+- One position below the starting rank.
+- The starting rank.
+- One position above the starting rank.
+
+The house MUST be able to:
+
+- Rise by one position.
+- Fall by one position.
+- Recover from the lower position through at least one legal path.
+
+Rank change MUST alter at least one privilege, obligation, available dilemma, or risk.
+
+This prototype MUST NOT implement the full commercial social-rank ladder.
+
+## 24.10 Dynasty Legacy Evaluation
+
+At the end of the third generation, the game MUST present an explainable dynasty-legacy evaluation.
+
+The evaluation MUST consider:
+
+- Final house rank.
+- Continuity of the bloodline.
+- Succession stability.
+- Surviving branch houses.
+- Property or territorial position.
+- Important marriages.
+- Family cohesion or fragmentation.
+- Major betrayals, exiles, conflicts, or recoveries.
+- Recovery after decline.
+
+Maximum wealth alone MUST NOT produce the best legacy result.
+
+The result MUST summarize the dynasty's causal history and show the principal contributing factors.
+
+## 24.11 Presentation Boundary
+
+The three-generation prototype prioritizes system validation over finished portrait production.
+
+Permitted presentation includes:
+
+- Silhouettes.
+- Color-coded character cards.
+- Heraldic marks.
+- Names and kinship labels.
+- Claim and succession indicators.
+- Simple relationship or memory icons.
+
+The family-council scene MUST clearly show each involved character's:
+
+- Name.
+- Relationship to the house head.
+- Claim or right relevant to the dilemma.
+- Position or demand.
+
+The prototype MUST NOT depend on:
+
+- A combinatorial face generator.
+- Age-progression portraits.
+- Emotion-expression portrait sets.
+- Large-scale final character art.
+
+## 24.12 Automated Validation
+
+The prototype MUST provide reproducible headless validation for:
+
+- Three complete generations.
+- Legal succession in each generation.
+- Persistence of family structure and rights.
+- Persistence of major house memories.
+- Decay or transformation of personal emotions.
+- At least one rank rise.
+- At least one rank fall.
+- At least one legal recovery path.
+- Exactly one terminal legacy result.
+- Deterministic state history for identical seeds and ordered inputs.
+- No invalid transition or unresolved input state.
+
+Batch runs MUST use varied legal strategies rather than repeat one fixed action sequence.
+
+## 24.13 Human Validation Gate
+
+Technical completion does not promote the prototype.
+
+Human play review MUST confirm:
+
+1. The three generations have materially different family structures.
+2. The succession problems do not feel like the same scenario with renamed characters.
+3. A first-generation choice is recognizable as the cause of a later dilemma.
+4. Rights and major house memories are understandable without reading raw logs.
+5. Rank rise, decline, and recovery feel meaningful.
+6. The final legacy result reflects the played dynasty rather than only accumulated wealth.
+7. The player can retell the dynasty as a causal family history.
+8. Repetition is not excessive during at least two to three hours of play.
+9. Characters and succession positions remain distinguishable without finished portraits.
+
+Failure of this gate MUST lead to revision of the multi-generation loop. It MUST NOT be concealed by adding art, maps, warfare, or unrelated content.
