@@ -69,6 +69,7 @@ func _candidate_panel(cid: String, ev: Dictionary) -> Control:
 	head.add_theme_constant_override("separation", 8)
 	head.add_child(UIStyle.portrait(cid, I18n.name_of(cid), 44))
 	var name_col := VBoxContainer.new()
+	name_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_col.add_child(UIStyle.label(I18n.name_of(cid), 16, UIStyle.INK, true))
 	name_col.add_child(UIStyle.label(I18n.t("succ.total", {"score": ev["candidates"][cid]["total"]}), 14, UIStyle.WAX, true))
 	head.add_child(name_col)

@@ -41,11 +41,11 @@ func _build() -> void:
 	center.add_child(canvas)
 
 	var pos := {
-		"edric_arven": Vector2(120, 10),
-		"myra_arven": Vector2(400, 10),
-		"beric_arven": Vector2(680, 10),
-		"aldren_arven": Vector2(260, 260),
-		"rowen_arven": Vector2(540, 260),
+		"beric_arven": Vector2(10, 10),
+		"edric_arven": Vector2(290, 10),
+		"myra_arven": Vector2(570, 10),
+		"aldren_arven": Vector2(280, 260),
+		"rowen_arven": Vector2(560, 260),
 	}
 	var lines := LineLayer.new()
 	lines.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -69,15 +69,20 @@ func _build() -> void:
 
 	for id in pos:
 		var card := _char_card(id)
+		card.name = "GenealogyCard_" + id
 		card.position = pos[id]
 		card.custom_minimum_size = Vector2(CARD_W, CARD_H)
 		canvas.add_child(card)
 
 	# 관계 라벨
 	var couple_label := UIStyle.label(I18n.t("gen.couple_label"), 11, UIStyle.MUTED)
+	couple_label.name = "CoupleLabel"
+	couple_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	couple_label.position = mid + Vector2(-20, -22)
 	canvas.add_child(couple_label)
 	var brother_label := UIStyle.label(I18n.t("gen.brother_label"), 11, UIStyle.MUTED)
+	brother_label.name = "BrotherLabel"
+	brother_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	brother_label.position = Vector2((pos["edric_arven"].x + CARD_W + pos["beric_arven"].x) / 2.0 - 40, 18)
 	canvas.add_child(brother_label)
 

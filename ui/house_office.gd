@@ -11,6 +11,7 @@ func _rebuild() -> void:
 	if _content != null:
 		_content.queue_free()
 	_content = MarginContainer.new()
+	_content.name = "OfficeContent"
 	_content.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_content.add_theme_constant_override("margin_left", 14)
 	_content.add_theme_constant_override("margin_right", 14)
@@ -18,10 +19,12 @@ func _rebuild() -> void:
 	_content.add_theme_constant_override("margin_bottom", 10)
 	add_child(_content)
 	var v := VBoxContainer.new()
+	v.name = "OfficeLayout"
 	v.add_theme_constant_override("separation", 8)
 	_content.add_child(v)
 	v.add_child(_header())
 	var main := HBoxContainer.new()
+	main.name = "OfficeMain"
 	main.add_theme_constant_override("separation", 8)
 	main.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	v.add_child(main)
@@ -35,11 +38,13 @@ func _rebuild() -> void:
 func _header() -> Control:
 	var s: SimState = Game.state
 	var panel := UIStyle.make_panel(UIStyle.PARCHMENT_DARK)
+	panel.name = "OfficeHeader"
 	var h := HBoxContainer.new()
 	h.add_theme_constant_override("separation", 12)
 	panel.add_child(h)
 	h.add_child(UIStyle.heraldry(40))
 	var left := VBoxContainer.new()
+	left.custom_minimum_size = Vector2(320, 0)
 	left.add_child(UIStyle.label(I18n.name_of("house_arven"), 20, UIStyle.WAX, true))
 	left.add_child(UIStyle.label(I18n.t("ui.turn_line",
 		{"turn": s.turn, "year": s.year(), "season": I18n.t("season." + s.season())}), 14, UIStyle.INK_SOFT))
@@ -48,6 +53,7 @@ func _header() -> Control:
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	h.add_child(spacer)
 	var right := VBoxContainer.new()
+	right.custom_minimum_size = Vector2(300, 0)
 	var ap := UIStyle.label(I18n.t("ui.action_points", {"ap": s.action_points}), 16, UIStyle.WAX, true)
 	ap.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	right.add_child(ap)

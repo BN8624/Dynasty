@@ -40,6 +40,7 @@ static func make_panel(bg: Color = PARCHMENT, border: Color = GOLD) -> PanelCont
 static func label(text: String, size: int = 15, color: Color = INK, bold: bool = false) -> Label:
 	var l := Label.new()
 	l.text = text
+	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	l.add_theme_font_size_override("font_size", size)
 	l.add_theme_color_override("font_color", color)
 	if bold:
@@ -127,6 +128,7 @@ static func badge(text: String, color: Color = WAX) -> Control:
 	p.add_theme_stylebox_override("panel", sb)
 	var l := Label.new()
 	l.text = text
+	l.autowrap_mode = TextServer.AUTOWRAP_OFF
 	l.add_theme_font_size_override("font_size", 11)
 	l.add_theme_color_override("font_color", Color("f4e9d2"))
 	p.add_child(l)

@@ -27,6 +27,7 @@ func _build() -> void:
 	head_row.add_theme_constant_override("separation", 10)
 	head_row.add_child(UIStyle.heraldry(36))
 	var title_col := VBoxContainer.new()
+	title_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title_col.add_child(UIStyle.label(I18n.t("council.title"), 14, UIStyle.MUTED))
 	title_col.add_child(UIStyle.label(I18n.t("event.%s.title" % eid), 24, UIStyle.WAX, true))
 	head_row.add_child(title_col)
