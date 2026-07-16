@@ -129,7 +129,12 @@ class Driver:
 		if scene_name() != "StartScreen":
 			fail(loc + ": expected StartScreen, got " + scene_name())
 			return
-		press(find_button(I18n.t("ui.new_game")), loc + ": new game")
+		press(find_button(I18n.t("ui.campaign_selection")), loc + ": campaign selection")
+		await _settle()
+		if scene_name() != "CampaignSelect":
+			fail(loc + ": expected CampaignSelect, got " + scene_name())
+			return
+		press(find_button(I18n.t("ui.choose_campaign")), loc + ": choose The Last Winter")
 		await _settle()
 		if scene_name() != "HouseOffice":
 			fail(loc + ": expected HouseOffice after new game, got " + scene_name())
@@ -199,7 +204,7 @@ class Driver:
 			loc, terminal, saw_council, saw_succession])
 
 	# ------------------------------------------------------------ 3세대 캠페인 경로
-	# Title → Campaign → Office → (Council/Genealogy) → Succession ×3 → Legacy → Restart → Title.
+	# Title → Campaign Selection → Campaign → Office → (Council/Genealogy) → Succession ×3 → Legacy → Restart → Title.
 	func _campaign_pass_one_locale(loc: String) -> void:
 		var saw_camp_council := false
 		var successions_seen := 0
@@ -209,7 +214,23 @@ class Driver:
 		if scene_name() != "StartScreen":
 			fail(loc + ": campaign: expected StartScreen, got " + scene_name())
 			return
-		press(find_button(I18n.t("ui.new_campaign")), loc + ": new campaign")
+		press(find_button(I18n.t("ui.campaign_selection")), loc + ": campaign selection")
+		await _settle()
+		if scene_name() != "CampaignSelect":
+			fail(loc + ": campaign: expected CampaignSelect, got " + scene_name())
+			return
+		var all_buttons: Array = []
+		var mode_buttons: Array = []
+		_collect_buttons(get_tree().current_scene, all_buttons)
+		for b in all_buttons:
+			if b.text == I18n.t("ui.choose_campaign"):
+				mode_buttons.append(b)
+		if mode_buttons.size() != 2:
+			fail(loc + ": campaign selection expected 2 mode buttons, got %d" % mode_buttons.size())
+			return
+		check_control_on_screen(mode_buttons[0], loc + ": The Last Winter mode button")
+		check_control_on_screen(mode_buttons[1], loc + ": dynasty campaign mode button")
+		press(mode_buttons[1], loc + ": choose dynasty campaign")
 		await _settle()
 		if scene_name() != "CampaignOffice":
 			fail(loc + ": expected CampaignOffice, got " + scene_name())

@@ -10,6 +10,7 @@ var came_from_council_event: String = ""
 
 const SCENES := {
 	"start": "res://ui/start_screen.tscn",
+	"campaign_select": "res://ui/campaign_select.tscn",
 	"office": "res://ui/house_office.tscn",
 	"council": "res://ui/family_council.tscn",
 	"succession": "res://ui/succession_screen.tscn",
@@ -22,11 +23,13 @@ const SCENES := {
 	"camp_legacy": "res://ui/campaign_legacy.tscn",
 }
 
-# 내보낸 빌드 검증용: `--verify-office` 사용자 인자로 실행하면 새 게임이
-# 집무실에 도달하는지 확인하고 결과를 출력한 뒤 종료한다. 일반 플레이에는 관여하지 않는다.
+# 내보낸 빌드 검증용 사용자 인자로 두 모드의 초기 화면 도달을 확인한다.
+# 결과를 출력하고 종료하며 일반 플레이에는 관여하지 않는다.
 func _ready() -> void:
 	if "--verify-office" in OS.get_cmdline_user_args():
 		_verify_office()
+	elif "--verify-campaign" in OS.get_cmdline_user_args():
+		_verify_campaign()
 
 func _verify_office() -> void:
 	await get_tree().process_frame
@@ -37,6 +40,29 @@ func _verify_office() -> void:
 	var cs := get_tree().current_scene
 	var ok: bool = cs != null and cs.name == "HouseOffice" and state.turn == 1 and state.action_points == 2
 	print("VERIFY_OFFICE_RESULT: %s (scene=%s)" % ["PASS" if ok else "FAIL", cs.name if cs != null else "<none>"])
+	get_tree().quit(0 if ok else 1)
+
+func _verify_campaign() -> void:
+	await get_tree().process_frame
+	goto("campaign_select")
+	for i in range(5):
+		await get_tree().process_frame
+	var select_scene := get_tree().current_scene
+	var select_name: String = select_scene.name if select_scene != null else "<none>"
+	var select_ok: bool = select_name == "CampaignSelect"
+	new_campaign()
+	goto("camp_office")
+	for i in range(5):
+		await get_tree().process_frame
+	var office_scene := get_tree().current_scene
+	var office_ok: bool = office_scene != null and office_scene.name == "CampaignOffice" \
+		and camp.generation == 1 and camp.turn == 1 and camp.action_points == 2
+	var ok := select_ok and office_ok
+	print("VERIFY_CAMPAIGN_RESULT: %s (select=%s, office=%s)" % [
+		"PASS" if ok else "FAIL",
+		select_name,
+		office_scene.name if office_scene != null else "<none>",
+	])
 	get_tree().quit(0 if ok else 1)
 
 func new_game() -> void:

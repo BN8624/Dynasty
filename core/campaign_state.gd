@@ -319,10 +319,10 @@ func snapshot_string() -> String:
 	for id in sorted_char_ids():
 		var c: Dictionary = characters[id]
 		var loy: String = "-" if c["loyalty"] == null else str(c["loyalty"])
-		parts.append("%s %s a%d %s%s%s%s h%d ab%d lc%d lo%s am%d r%s f%s m%s sp%s b%s" % [
+		parts.append("%s %s a%d %s%s%s%s%s h%d ab%d lc%d lo%s am%d r%s f%s m%s sp%s b%s" % [
 			id, c["name_key"], c["age_months"], "1" if c["alive"] else "0",
 			"1" if c["in_house"] else "0", "1" if c["exiled"] else "0",
-			"1" if c["disinherited"] else "0",
+			"1" if c["disinherited"] else "0", "1" if c["former_head"] else "0",
 			c["health"], c["ability"], c["legal_claim"], loy, c["ambition"], c["role"],
 			c["father_id"], c["mother_id"], c["spouse_id"], c["branch_id"]])
 	var rkeys: Array = relationships.keys()

@@ -15,6 +15,7 @@ func _initialize() -> void:
 	test_emotion_decay_and_transform()
 	var batch := run_batch()
 	test_completion(batch)
+	test_successor_legality(batch)
 	test_persistence_and_causality(batch)
 	test_rank_paths(batch)
 	test_dilemma_variety(batch)
@@ -296,6 +297,31 @@ func test_completion(batch: Array) -> void:
 		check(CampaignRules.legal_inputs(s).is_empty(), ctx + ": inputs still legal after legacy")
 		check_invariants(s, ctx)
 
+# ---------------------------------------------------------------- 승계 후보 자격
+
+func test_successor_legality(batch: Array) -> void:
+	for run in batch:
+		if not run["complete"]:
+			continue
+		var retired_heads: Dictionary = {}
+		var s: CampaignState = run["state"]
+		var ctx := "successor legality %s/%d" % [run["profile"], run["seed"]]
+		for r in s.succession_records:
+			var winner: String = r["new_head"]
+			check(not retired_heads.has(winner), ctx + ": former head returned as successor: " + winner)
+			retired_heads[r["old_head"]] = true
+
+func test_branch_liveness(s: CampaignState, ctx: String) -> void:
+	for bid in s.branches:
+		var has_living_member := false
+		for cid in s.sorted_char_ids():
+			var c: Dictionary = s.chr(cid)
+			if c["branch_id"] == bid and c["alive"]:
+				has_living_member = true
+				break
+		check(bool(s.branches[bid]["alive"]) == has_living_member,
+			ctx + ": branch liveness is stale: " + str(bid))
+
 # ---------------------------------------------------------------- 지속성/인과
 
 func test_persistence_and_causality(batch: Array) -> void:
@@ -321,6 +347,7 @@ func test_persistence_and_causality(batch: Array) -> void:
 				ctx + ": successor has no lineage record")
 		# 결혼 기록 보존.
 		check(s.marriages.size() >= 1, ctx + ": marriages lost")
+		test_branch_liveness(s, ctx)
 		# 세대 간 인과: 이전 세대 기억이 원인인 딜레마.
 		for d in s.dilemma_history:
 			if d["origin_memory_id"] == "":

@@ -86,7 +86,7 @@ static func _mk_char(s: CampaignState, gender: String, age_y: int, health: int, 
 	s.characters[id] = {
 		"id": id, "name_key": _pick_name(s, gender), "gender": gender,
 		"age_months": age_y * 12 + s.rng_roll(12), "alive": true, "in_house": true,
-		"exiled": false, "disinherited": false,
+		"exiled": false, "disinherited": false, "former_head": false,
 		"health": health, "ability": ability, "legal_claim": claim,
 		"loyalty": null if loyalty < 0 else loyalty, "ambition": ambition,
 		"role": role, "generation_born": s.generation,
@@ -118,6 +118,7 @@ static func _generate_founding_family(s: CampaignState) -> void:
 	# 가주의 형제(방계 위험 요인).
 	var kin := _mk_char(s, "m" if s.rng_roll(2) == 0 else "f", 44 + s.rng_roll(4),
 		55 + s.rng_roll(20), 45 + s.rng_roll(25), 25, 40 + s.rng_roll(25), 55 + s.rng_roll(30), "kin")
+	s.flags["founder_collateral_id"] = kin
 	s.set_rel(head, kin, 40 + s.rng_roll(25))
 	# 형제간 관계.
 	var kids := s.children_of(head)
@@ -588,7 +589,8 @@ static func _build_dilemma(s: CampaignState, structure: String) -> Dictionary:
 			var wk := ""
 			for cid in s.sorted_char_ids():
 				var c: Dictionary = s.chr(cid)
-				if c["alive"] and c["in_house"] and cid != head and c["branch_id"] == "" \
+				if c["alive"] and c["in_house"] and cid != head and not c["former_head"] \
+						and c["branch_id"] == "" \
 						and not c["disinherited"] and c["loyalty"] != null \
 						and (int(c["loyalty"]) <= 25 or s.emotion_intensity(cid, "resentment", head) >= 70):
 					wk = cid
@@ -1119,6 +1121,15 @@ static func _on_death(s: CampaignState, id: String) -> void:
 	var c: Dictionary = s.chr(id)
 	c["alive"] = false
 	c["role"] = "deceased_" + str(c["role"])
+	var branch_id: String = c["branch_id"]
+	if branch_id != "" and s.branches.has(branch_id):
+		var has_living_member := false
+		for other_id in s.sorted_char_ids():
+			var other: Dictionary = s.chr(other_id)
+			if other["branch_id"] == branch_id and other["alive"]:
+				has_living_member = true
+				break
+		s.branches[branch_id]["alive"] = has_living_member
 	s.log_entry(id, "chron.camp_death", {}, true)
 	if s.regent_id == id:
 		s.regent_id = ""
@@ -1191,6 +1202,7 @@ static func _succession_candidates(s: CampaignState) -> Array:
 		var c: Dictionary = s.chr(id)
 		if c["alive"] and c["in_house"] and id != s.current_head_id \
 				and not c["disinherited"] and not c["exiled"] and c["branch_id"] == "" \
+				and not c["former_head"] \
 				and int(c["legal_claim"]) >= 10:
 			out.append(id)
 	# 직계 우선, 청구권 내림차순 정렬.
@@ -1206,11 +1218,18 @@ static func _succession_candidates(s: CampaignState) -> Array:
 
 static func _run_succession(s: CampaignState, cause: String) -> void:
 	var old_head := s.current_head_id
+	if s.chr(old_head)["alive"]:
+		s.chr(old_head)["former_head"] = true
 	var cands := _succession_candidates(s)
 	if cands.is_empty():
 		# 대가 끊김 — 먼 사촌이 가계를 잇는다(유산 평가에 불리).
+		var parent_id: String = s.flags["founder_collateral_id"]
+		var parent: Dictionary = s.chr(parent_id)
+		var father_id := parent_id if parent["gender"] == "m" else ""
+		var mother_id := parent_id if parent["gender"] == "f" else ""
 		var cousin := _mk_char(s, "m" if s.rng_roll(2) == 0 else "f", 28 + s.rng_roll(8),
-			60 + s.rng_roll(20), 45 + s.rng_roll(20), 30, 50, 50 + s.rng_roll(20), "kin")
+			60 + s.rng_roll(20), 45 + s.rng_roll(20), 30, 50, 50 + s.rng_roll(20), "kin",
+			father_id, mother_id)
 		s.flags["continuity_broken"] = true
 		s.log_entry(cousin, "chron.camp_distant_cousin", {}, true)
 		cands = [cousin]
