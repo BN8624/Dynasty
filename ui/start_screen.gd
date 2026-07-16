@@ -39,6 +39,12 @@ func _build() -> void:
 	var new_btn := UIStyle.button(I18n.t("ui.new_game"), true, 20)
 	new_btn.pressed.connect(_on_new_game)
 	v.add_child(new_btn)
+	var camp_btn := UIStyle.button(I18n.t("ui.new_campaign"), true, 20)
+	camp_btn.pressed.connect(_on_new_campaign)
+	v.add_child(camp_btn)
+	var camp_hint := UIStyle.label(I18n.t("ui.new_campaign_hint"), 12, UIStyle.MUTED)
+	camp_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	v.add_child(camp_hint)
 	var lang_btn := UIStyle.button(I18n.t("ui.language"), false, 14)
 	lang_btn.pressed.connect(_on_language)
 	v.add_child(lang_btn)
@@ -49,6 +55,10 @@ func _build() -> void:
 func _on_new_game() -> void:
 	Game.new_game()
 	Game.goto("office")
+
+func _on_new_campaign() -> void:
+	Game.new_campaign()
+	Game.goto("camp_office")
 
 func _on_language() -> void:
 	I18n.set_locale("ko" if I18n.locale == "en" else "en")

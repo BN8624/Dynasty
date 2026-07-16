@@ -22,7 +22,9 @@ class Driver:
 		get_tree().root.size = Vector2i(1280, 720)
 		await _settle()
 		await _pass_one_locale("en")
+		await _campaign_pass_one_locale("en")
 		await _pass_one_locale("ko")
+		await _campaign_pass_one_locale("ko")
 		print("")
 		print("=== SMOKE SUMMARY ===")
 		for f in failures:
@@ -195,3 +197,96 @@ class Driver:
 			fail(loc + ": restart did not restore the canonical initial fixture")
 		print("smoke pass [%s]: terminal=%s, council=%s, succession=%s, restart ok" % [
 			loc, terminal, saw_council, saw_succession])
+
+	# ------------------------------------------------------------ 3세대 캠페인 경로
+	# Title → Campaign → Office → (Council/Genealogy) → Succession ×3 → Legacy → Restart → Title.
+	func _campaign_pass_one_locale(loc: String) -> void:
+		var saw_camp_council := false
+		var successions_seen := 0
+		I18n.set_locale(loc)
+		Game.goto("start")
+		await _settle()
+		if scene_name() != "StartScreen":
+			fail(loc + ": campaign: expected StartScreen, got " + scene_name())
+			return
+		press(find_button(I18n.t("ui.new_campaign")), loc + ": new campaign")
+		await _settle()
+		if scene_name() != "CampaignOffice":
+			fail(loc + ": expected CampaignOffice, got " + scene_name())
+			return
+		check_camp_office_layout(loc)
+		# 계보 왕복
+		press(find_button(I18n.t("ui.genealogy")), loc + ": open campaign genealogy")
+		await _settle()
+		if scene_name() != "CampaignGenealogy":
+			fail(loc + ": expected CampaignGenealogy, got " + scene_name())
+		var back_button := find_button(I18n.t("ui.back_office"))
+		check_control_on_screen(back_button, loc + ": campaign genealogy back button")
+		press(back_button, loc + ": back to campaign office")
+		await _settle()
+		if scene_name() != "CampaignOffice":
+			fail(loc + ": expected CampaignOffice after genealogy, got " + scene_name())
+			return
+		# 본편 진행 — 턴 종료와 첫 활성 선택지로 유산까지 완주한다.
+		var guard := 0
+		while guard < 500:
+			guard += 1
+			match scene_name():
+				"CampaignOffice":
+					press(find_button(I18n.t("ui.end_turn")), loc + ": campaign end turn")
+				"CampaignCouncil":
+					saw_camp_council = true
+					var choice_button := first_enabled_choice_button()
+					check_control_on_screen(choice_button, loc + ": campaign council choice")
+					press(choice_button, loc + ": campaign council choice")
+				"CampaignSuccession":
+					successions_seen += 1
+					if Game.camp.succession_records.is_empty():
+						fail(loc + ": campaign succession screen without record")
+					var continue_button := first_enabled_choice_button()
+					check_control_on_screen(continue_button, loc + ": campaign succession continue")
+					press(continue_button, loc + ": campaign succession continue")
+				"CampaignLegacy":
+					break
+				_:
+					fail(loc + ": campaign: unexpected scene " + scene_name())
+					return
+			await _settle()
+		if scene_name() != "CampaignLegacy":
+			fail(loc + ": never reached CampaignLegacy (stuck on %s, gen %d turn %d)" % [
+				scene_name(), Game.camp.generation, Game.camp.turn])
+			return
+		if Game.camp.legacy_result.is_empty():
+			fail(loc + ": legacy screen without legacy result")
+		if successions_seen != 3:
+			fail(loc + ": expected 3 succession screens, saw %d" % successions_seen)
+		if not saw_camp_council:
+			fail(loc + ": campaign council never appeared")
+		if Game.camp.generation != 3:
+			fail(loc + ": campaign ended in generation %d" % Game.camp.generation)
+		# 재시작 → 새 캠페인 픽스처 복원 확인
+		var restart_button := find_button(I18n.t("ui.restart_campaign"))
+		check_control_on_screen(restart_button, loc + ": campaign restart button")
+		press(restart_button, loc + ": campaign restart")
+		await _settle()
+		if scene_name() != "CampaignOffice":
+			fail(loc + ": expected CampaignOffice after restart, got " + scene_name())
+			return
+		var fresh := CampaignRules.new_campaign(Game.camp.seed_value)
+		if Game.camp.snapshot_string() != fresh.snapshot_string():
+			fail(loc + ": campaign restart did not produce a fresh deterministic fixture")
+		# 타이틀 복귀(이후 TLW 경로가 다시 구동되어 상호 간섭이 없음을 증명한다)
+		Game.goto("start")
+		await _settle()
+		print("campaign smoke pass [%s]: legacy=%s, successions=%d, restart ok" % [
+			loc, Game.camp.legacy_result.get("result_id", "<none>") if not Game.camp.legacy_result.is_empty() else "<fresh>",
+			successions_seen])
+
+	func check_camp_office_layout(loc: String) -> void:
+		var office := get_tree().current_scene
+		var main := office.find_child("OfficeMain", true, false) as Control
+		check_control_on_screen(main, loc + ": campaign office main area")
+		if main != null and main.size.y < 350.0:
+			fail(loc + ": campaign office main area is vertically collapsed: " + str(main.get_global_rect()))
+		check_control_on_screen(find_button(I18n.t("ui.genealogy")), loc + ": campaign genealogy button")
+		check_control_on_screen(find_button(I18n.t("ui.end_turn")), loc + ": campaign end-turn button")

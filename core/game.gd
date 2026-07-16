@@ -15,6 +15,11 @@ const SCENES := {
 	"succession": "res://ui/succession_screen.tscn",
 	"genealogy": "res://ui/genealogy_view.tscn",
 	"end": "res://ui/end_screen.tscn",
+	"camp_office": "res://ui/campaign_office.tscn",
+	"camp_council": "res://ui/campaign_council.tscn",
+	"camp_succession": "res://ui/campaign_succession.tscn",
+	"camp_genealogy": "res://ui/campaign_genealogy.tscn",
+	"camp_legacy": "res://ui/campaign_legacy.tscn",
 }
 
 # 내보낸 빌드 검증용: `--verify-office` 사용자 인자로 실행하면 새 게임이
@@ -76,3 +81,46 @@ func confirm_succession() -> void:
 	Rules.continue_after_succession(state)
 	state_changed.emit()
 	goto(screen_for_phase())
+
+# ---------------------------------------------------------------- 3세대 캠페인 모드
+
+var camp: CampaignState = null
+var next_camp_seed: int = 1
+
+func new_campaign() -> void:
+	camp = CampaignRules.new_campaign(next_camp_seed)
+	next_camp_seed += 1
+	state_changed.emit()
+
+func camp_screen_for_phase() -> String:
+	match camp.phase:
+		CampaignState.PHASE_ACTIONS:
+			return "camp_office"
+		CampaignState.PHASE_DILEMMA:
+			return "camp_council"
+		CampaignState.PHASE_SUCCESSION:
+			return "camp_succession"
+		CampaignState.PHASE_LEGACY:
+			return "camp_legacy"
+	return "camp_office"
+
+func camp_do_action(id: String, option: String = "") -> void:
+	CampaignRules.apply_action(camp, id, option)
+	state_changed.emit()
+	if camp.phase != CampaignState.PHASE_ACTIONS:
+		goto(camp_screen_for_phase())
+
+func camp_end_turn() -> void:
+	CampaignRules.end_action_phase(camp)
+	state_changed.emit()
+	goto(camp_screen_for_phase())
+
+func camp_choose(choice_id: String) -> void:
+	CampaignRules.apply_dilemma_choice(camp, choice_id)
+	state_changed.emit()
+	goto(camp_screen_for_phase())
+
+func camp_confirm_succession() -> void:
+	CampaignRules.confirm_succession(camp)
+	state_changed.emit()
+	goto(camp_screen_for_phase())

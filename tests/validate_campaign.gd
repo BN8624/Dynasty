@@ -20,6 +20,7 @@ func _initialize() -> void:
 	test_dilemma_variety(batch)
 	test_determinism()
 	report_batch(batch)
+	test_i18n_campaign(batch)
 	print("")
 	print("=== CAMPAIGN VALIDATION SUMMARY ===")
 	print("checks: %d, failures: %d" % [checks, failures.size()])
@@ -437,6 +438,88 @@ func replay_inputs(seed_v: int, log: PackedStringArray) -> CampaignState:
 			check(false, "replay: input rejected: " + raw)
 			return null
 	return s
+
+# ---------------------------------------------------------------- i18n 완전성
+
+var _tables: Dictionary = {}
+
+func load_locale(loc: String) -> Dictionary:
+	if _tables.has(loc):
+		return _tables[loc]
+	var f := FileAccess.open("res://i18n/%s.json" % loc, FileAccess.READ)
+	check(f != null, "i18n: missing file " + loc)
+	if f == null:
+		return {}
+	var data: Variant = JSON.parse_string(f.get_as_text())
+	check(data is Dictionary, "i18n: invalid json " + loc)
+	_tables[loc] = data if data is Dictionary else {}
+	return _tables[loc]
+
+func t_key_exists(key: String) -> void:
+	for loc in ["en", "ko"]:
+		var tab := load_locale(loc)
+		check(tab.has(key) and String(tab[key]).strip_edges() != "", "i18n[%s]: missing key %s" % [loc, key])
+
+# 캠페인 규칙이 참조하는 키 계열 + 배치에서 실제 사용된 키를 EN/KO 양쪽에서 전수 검사한다.
+func test_i18n_campaign(batch: Array) -> void:
+	for id in CampaignRules.ACTION_IDS:
+		t_key_exists("action.%s.title" % id)
+		t_key_exists("action.%s.desc" % id)
+	for st in CampaignRules.DILEMMA_STRUCTURES:
+		t_key_exists("dlm.%s.title" % st)
+		t_key_exists("dlm.%s.desc" % st)
+	for r in CampaignState.RANK_IDS:
+		t_key_exists(r)
+	for k in ["age", "health", "abdication", "forced_removal", "max_turns"]:
+		t_key_exists("succcause." + k)
+	for k in ["betrayal", "exile", "disinheritance", "forced_marriage", "house_rescue",
+			"rights_seized", "rights_restored"]:
+		t_key_exists("memkind." + k)
+		t_key_exists("memeffect." + k)
+	for k in ["resentment", "affection", "jealousy", "fear"]:
+		t_key_exists("emotion." + k)
+	for k in ["camp_min_turns", "camp_succession_window", "camp_max_turns", "camp_royal_levy"]:
+		t_key_exists("upcoming." + k)
+	for k in ["rivalry_deepens", "unresolved_claims", "lasting_resentment", "house_grudge",
+			"wealth_drain", "weakened_line", "claim_persists", "branch_feud", "reduced_seat",
+			"debt_grows", "claims_harden", "regent_power", "regent_resentment", "young_rule",
+			"disinherited_line", "exiled_return", "repeat_betrayal", "restored_rival",
+			"outside_claim", "obligation_due", "rank_fall", "kin_resentment",
+			"prolonged_decline", "spurned_heir", "cold_duty"]:
+		t_key_exists("risk." + k)
+	for k in ["no_valid_target", "wealth_10", "wealth_18", "influence_6", "need_spare_estate",
+			"rank_at_top", "petition_used", "petition_threshold", "petition_threshold_low",
+			"no_debt", "too_early_abdicate", "head_too_young"]:
+		t_key_exists("reason." + k)
+	# 배치에서 실제 발생한 키.
+	var used: Dictionary = {}
+	for run in batch:
+		var s: CampaignState = run["state"]
+		for e in s.chronicle:
+			used[e["key"]] = true
+		for d in s.dilemma_history:
+			used["choice.%s.title" % d["choice"]] = true
+			used["choice.%s.desc" % d["choice"]] = true
+		for r in s.succession_records:
+			used["outcome." + str(r["outcome"])] = true
+			var ev: Dictionary = r["evidence"]
+			for cid in ev["candidates"]:
+				for p in ev["candidates"][cid]["parts"]:
+					used[p["key"]] = true
+			for ch in ev["changes"]:
+				used[ch["key"]] = true
+		if not s.legacy_result.is_empty():
+			used["legresult.%s.title" % s.legacy_result["result_id"]] = true
+			used["legresult.%s.desc" % s.legacy_result["result_id"]] = true
+			for c in s.legacy_result["contributors"]:
+				used[c["key"]] = true
+		for cid in s.sorted_char_ids():
+			used[s.chr(cid)["name_key"]] = true
+		for m in s.memories:
+			used[m["effect_key"]] = true
+	for k in used:
+		t_key_exists(str(k))
+	print("  i18n keys exercised by batch: %d" % used.size())
 
 # ---------------------------------------------------------------- 배치 보고
 
