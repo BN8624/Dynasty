@@ -1,0 +1,4 @@
+# Godot 캐시/임포트 산출물
+.godot/
+*.tmp
+export/

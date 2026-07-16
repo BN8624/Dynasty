@@ -1,24 +1,24 @@
 # PROJECT_CANON.md
 
 **Project codename:** `DYNASTY`  
-**Canon version:** `0.1`  
-**Canon status:** `FIRST_PLAYABLE_LOCKED`
+**Canon version:** `0.4.1`  
+**Status:** `PRODUCT_DIRECTION_AND_FIRST_PLAYABLE_LOCKED`
 
-This file defines durable project semantics, contracts, invariants, protected boundaries, and high-risk validation requirements.
-
-An active GitHub Issue may select part of this canon for implementation. It MUST NOT silently redefine this canon. Numeric values explicitly marked as balance values may change only in a dedicated balance task with reproducible evidence.
+This file is the project-specific source of truth for durable product identity, commercial direction, gameplay contracts, protected boundaries, and first-playable validation.
 
 ---
 
-## CANON-01 — Product Identity
+# 1. Product Identity
 
-### Product
+## 1.1 Product
 
-`DYNASTY` is a commercial PC single-player dynastic survival strategy game.
+`DYNASTY` is a commercial PC single-player dynastic strategy game.
 
-The player controls the continuity of a house, not one permanent character. When the current house head dies, play continues through succession if the house remains viable.
+The player manages the continuity of a noble house across multiple generations. The intended commercial product is a mid-sized indie strategy game whose primary reward is growing a minor house into a lasting and influential dynasty.
 
-### Runtime technology
+A single full campaign SHOULD target approximately 15–30 hours.
+
+## 1.2 Technology
 
 The shipped game MUST use:
 
@@ -26,28 +26,52 @@ The shipped game MUST use:
 - GDScript.
 - A 2D, mouse-driven interface.
 - Turn-based simulation.
-- Offline execution with no external LLM or network dependency.
+- Offline runtime.
+- No external LLM dependency.
+- No network dependency for core play.
 
-Python MAY be used for development-only tools such as balance simulation, fixture generation, and data validation. Python MUST NOT be required to run the shipped game.
+Python MAY be used for development-only tools such as balance simulation, fixture generation, data validation, and statistical analysis.
 
-### Core promise
+Python MUST NOT be required to run the shipped game.
 
-> Preserve a house through imperfect choices where the most capable heir and the most legitimate heir may be different people.
+## 1.3 Core Promise
 
-### Core loop
+> Grow a vulnerable house into a lasting dynasty by resolving family dilemmas, pursuing long-term plans, and surviving the consequences of succession across generations.
 
-```text
-Inspect the house
-→ spend limited actions
-→ apply costs and reactions
-→ advance time
-→ resolve death and succession
-→ continue with the changed house
-```
+## 1.4 Emotional Priority
 
-### Product boundary
+The intended player experience MUST prioritize:
 
-This project is a finished game. It is not:
+1. Dynasty growth and achievement.
+2. Family political drama.
+3. Harsh survival pressure.
+4. Emergent-history observation.
+
+The game MUST NOT become primarily a passive history viewer.
+
+## 1.5 Player Role
+
+The player uses a hybrid control model.
+
+At house level, the player manages durable concerns such as:
+
+- Education.
+- Marriage.
+- Heir preparation.
+- Succession designation.
+- House assets.
+- Long-term plans.
+- Family obligations.
+
+The current house head determines or limits actions that require personal authority, including politics, finance, negotiation, offices, and title-dependent decisions.
+
+When the house head changes, the player's dynasty-level perspective continues, but available actions and their effectiveness MAY change.
+
+## 1.6 Product Boundary
+
+This project is a complete game.
+
+It is not:
 
 - A generic history simulator.
 - A dynasty-game construction kit.
@@ -55,25 +79,46 @@ This project is a finished game. It is not:
 - A world-generation tool.
 - A general simulation framework.
 - A generated-fiction product.
+- A `Crusader Kings`-scale simulation of geography, warfare, religion, and culture.
+
+The product MUST achieve scale through reusable systems and accumulated consequences rather than manual content volume alone.
 
 ---
 
-## CANON-02 — Design Invariants
+# 2. Protected Design Invariants
 
-### Family is the strategy space
+## 2.1 Family Is the Strategy Space
 
-Important characters MUST have:
+Important characters MUST have kinship, succession rights, loyalty, ambition, relationships, and conflicting interests.
 
-- Kinship.
-- Succession rights.
-- Loyalty.
-- Ambition.
-- Relationships.
-- Conflicting interests.
+Characters MUST NOT function only as disposable stat bonuses.
 
-Characters MUST NOT be reduced to disposable stat bonuses.
+## 2.2 Family Dilemmas Drive Moment-to-Moment Play
 
-### Succession is the central resolution system
+The core turn priority is:
+
+1. Resolve or defer a family dilemma.
+2. Advance long-term dynasty plans.
+3. Allocate remaining scarce actions and resources.
+
+A meaningful dilemma MUST:
+
+- Involve identifiable characters with prior relationships.
+- Create winners and losers inside the family.
+- Affect at least one long-term system.
+- Preserve consequences beyond the current scene.
+- Avoid a universally correct option.
+- Be understandable without revealing every hidden future result.
+
+The game MUST NOT become a routine sequence of optimal resource conversions.
+
+## 2.3 Long-Term Plans Compete With Immediate Crises
+
+The player MUST be able to pursue multi-turn plans such as heir education, marriage networks, rank advancement, property recovery, family reconciliation, political leverage, and succession preparation.
+
+Delayed or abandoned plans MUST remain visible enough for the player to understand their opportunity cost.
+
+## 2.4 Succession Is the Main Resolution Point
 
 Succession MUST resolve consequences accumulated before death, including:
 
@@ -83,66 +128,205 @@ Succession MUST resolve consequences accumulated before death, including:
 - Kin management.
 - Relationship changes.
 - Discovered secrets.
-- House legitimacy and cohesion.
+- House legitimacy.
+- House cohesion.
 
-Succession MUST NOT be a cosmetic character swap.
+Succession MUST NOT be implemented as a cosmetic character swap.
 
-### Every material benefit has a cost
+## 2.5 Generational Change Must Alter the Problem
 
-No action may solve a major problem without cost, opportunity cost, or later risk.
+Long-campaign variety MUST prioritize:
 
-Required trade-off patterns:
+1. Internal family structure.
+2. House social rank.
+3. Accumulated relationships with surrounding houses.
+
+Later generations MUST NOT merely repeat an earlier succession with renamed characters.
+
+## 2.6 Every Material Benefit Has a Cost
+
+No action may solve a major problem without a cost, opportunity cost, or later risk.
+
+Required trade-off patterns include:
 
 - A strong marriage provides protection and invites interference.
-- Training the younger son improves capability and intensifies rivalry.
-- Restoring wealth reduces cohesion.
+- Training a stronger but less legitimate heir intensifies rivalry.
+- Restoring wealth may damage cohesion.
 - Buying kin support consumes wealth or influence.
 - Changing the formal heir creates opposition.
 
-### Success creates exposure
+## 2.7 Success Creates Exposure
 
-Increasing wealth, power, titles, or descendants MUST create additional obligations, rivals, or succession risk.
+Increasing wealth, rank, titles, branches, or descendants MUST create additional obligations, rivals, or succession risk.
 
 The game MUST NOT become permanently safe by increasing every number.
 
-### Important outcomes are explainable
+## 2.8 Important Outcomes Must Be Explainable
 
-For succession and terminal outcomes, the UI MUST expose:
+For succession and terminal outcomes, the game MUST expose:
 
 - Relevant candidates.
 - Base scores.
 - Applied modifiers.
-- Supporters and opponents.
+- Supporters.
+- Opponents.
 - The selected outcome.
 - Immediate state changes.
 
 Hidden randomness MUST NOT determine succession.
 
-### Story emerges from rules
+## 2.9 Story Emerges From Rules
 
 Chronicle text MUST be generated from deterministic rules and templates.
 
 External generative AI MUST NOT be used at runtime.
 
-### Build the game, not an engine
+---
 
-Until the first playable passes `CANON-17`, implementation MUST prioritize the locked scenario and MUST NOT create generalized systems for hypothetical future content.
+# 3. Long Campaign Direction
+
+Sections 3 and 4 define the intended commercial product. They do not authorize implementation beyond the first-playable scope lock.
+
+## 3.1 Campaign Scale
+
+The intended full campaign:
+
+- Spans multiple generations.
+- Targets approximately 15–30 hours.
+- Supports rise, stagnation, decline, succession crisis, and recovery.
+- Creates duration through systemic variation rather than hundreds of unrelated handcrafted events.
+- Remains strategically meaningful without requiring a large navigable map or tactical warfare.
+
+## 3.2 Internal Family Structure
+
+Generations MAY vary through:
+
+- Number and quality of children.
+- Heir competition.
+- Age gaps.
+- Spousal influence.
+- Guardianship.
+- Regency.
+- Branch houses.
+- Claimant factions.
+- Family offices.
+- Internal civil conflict.
+
+Internal family structure is the primary source of long-campaign variation.
+
+## 3.3 Social Rank
+
+The house MUST be able to rise, stagnate, fall, and recover.
+
+Possible rank progression MAY include:
+
+- Minor landed house.
+- Established regional house.
+- Major noble house.
+- Royal insider.
+- Royal or near-royal dynasty.
+
+Higher rank MUST add obligations and exposure rather than acting as a permanent safety upgrade.
+
+## 3.4 External House Memory
+
+Relations with other houses SHOULD accumulate through marriage, debt, aid, betrayal, guardianship, hostages, rival claims, shared offices, and inherited grudges.
+
+External politics support the family game. They MUST NOT replace it as the primary focus.
+
+## 3.5 Campaign Completion
+
+Campaign evaluation MUST prioritize:
+
+1. Dynasty legacy.
+2. Survival across a defined generational span.
+3. Highest social rank reached.
+
+Dynasty legacy SHOULD account for categories such as:
+
+- Final social rank.
+- Assets and wealth.
+- Surviving branch houses.
+- Succession continuity.
+- Family cohesion or fragmentation.
+- Marriage network.
+- Offices and titles.
+- Recovery after decline.
+- Historic achievements.
+- Scandals, civil wars, betrayals, and destructive debt.
+
+The final legacy evaluation MUST summarize the dynasty's history rather than reward only maximum wealth.
+
+The exact campaign generation count and legacy weights are mutable balance values.
 
 ---
 
-## CANON-03 — First Playable Contract
+# 4. Player Experience Hierarchy
 
-### Scenario
+## 4.1 House Office
+
+The house office is the primary normal-play screen.
+
+It MUST function as the operating center of the dynasty and present the current head, family condition, active plans, obligations, resources, rank, threats, available actions, time, and recent consequences.
+
+It MUST NOT look or behave like a generic analytics dashboard.
+
+## 4.2 Family Council
+
+Important family dilemmas MUST transition to a character-centered family-council scene.
+
+The scene MUST:
+
+- Put affected characters at the center.
+- Show each participant's position or demand.
+- Make emotional and political costs legible.
+- Present a limited set of consequential choices.
+- Return to the house office with persistent consequences.
+
+A major family dilemma MUST NOT be reduced to a minor notification popup.
+
+## 4.3 Genealogy
+
+Genealogy is a supporting analysis tool, not the default play surface.
+
+It SHOULD display bloodlines, marriages, children, deceased members, branches, claims, and current or potential heirs.
+
+---
+
+# 5. First Playable
+
+## 5.1 Role
+
+The first playable is the smallest proof of the intended commercial product.
+
+It MUST validate:
+
+- A house-office management surface.
+- A character-centered family dilemma.
+- A long-term preparation problem.
+- Scarce actions.
+- Known succession pressure.
+- Explainable succession.
+- Persistent consequences.
+- A desire to replay with another family strategy.
+
+It does not implement the multi-generation campaign, social-rank ladder, branch-house system, or dynasty-legacy ending defined in Sections 3 and 4.
+
+## 5.2 Scenario
+
+The first playable scenario is:
 
 ```text
 THE LAST WINTER
 ```
 
-### Validation question
+## 5.3 Validation Question
 
-> Is preparing for a known death and surviving the resulting succession crisis interesting enough to replay with a different strategy?
+The first playable exists to answer:
 
-### Fixed structure
+> Is preparing for a known death, choosing among conflicting family interests, and surviving the resulting succession crisis interesting enough to replay with a different strategy?
+
+## 5.4 Fixed Structure
 
 The first playable MUST have:
 
@@ -151,44 +335,16 @@ The first playable MUST have:
 - Two action points at the start of each turn.
 - Edric's mandatory death on turn 6.
 - Final resolution on turn 12.
-- Target first-run duration of 10–20 minutes.
-- Target replay duration of 5–15 minutes.
-
-### Scope lock
-
-Before the first playable passes the promotion gate, the project MUST NOT add:
-
-- A world map.
-- Warfare or armies.
-- Tactical combat.
-- City building.
-- Trade networks.
-- Religion simulation.
-- Culture simulation.
-- Technology trees.
-- Dozens of houses.
-- Hundreds of simulated characters.
-- Full character-life simulation.
-- Rule editors.
-- Content editors.
-- Mod support.
-- Multiplayer.
-- Mobile or console targets.
-- Steam achievements or cloud saves.
-- Final art production.
-- Voice acting.
-- Runtime generative AI.
-- Free-text negotiation.
-
-Temporary UI, placeholder icons, basic fonts, and minimal audio are allowed only when they support first-playable validation.
+- A target first-run duration of 10–20 minutes.
+- A target replay duration of 5–15 minutes.
 
 ---
 
-## CANON-04 — Stable Internal IDs
+# 6. Canonical IDs
 
-Display names MAY be localized. Internal IDs MUST remain stable.
+Stable internal IDs MUST be used. Display names MAY be localized.
 
-### Houses
+## 6.1 House IDs
 
 ```text
 house_arven
@@ -196,7 +352,7 @@ house_velor
 house_cardin
 ```
 
-### Characters
+## 6.2 Character IDs
 
 ```text
 edric_arven
@@ -206,7 +362,7 @@ rowen_arven
 beric_arven
 ```
 
-### Actions
+## 6.3 Action IDs
 
 ```text
 educate_aldren
@@ -219,7 +375,7 @@ reconcile_brothers
 declare_heir
 ```
 
-### Fixed events
+## 6.4 Fixed Event IDs
 
 ```text
 debt_demand
@@ -230,7 +386,7 @@ regime_test
 final_judgment
 ```
 
-### Succession outcomes
+## 6.5 Succession Outcome IDs
 
 ```text
 stable_aldren
@@ -240,7 +396,7 @@ contested_rowen
 succession_civil_war
 ```
 
-### Terminal results
+## 6.6 Terminal Result IDs
 
 ```text
 victory_stable_succession
@@ -255,19 +411,13 @@ defeat_unresolved_civil_war
 
 ---
 
-## CANON-05 — Scenario Cast
+# 7. Scenario Cast
 
-### House Arven
+## 7.1 House Arven
 
-House Arven is a minor landed house with:
+House Arven is a minor landed house with one estate, weak finances, low political influence, internal succession tension, and a terminally ill house head.
 
-- One estate.
-- Weak finances.
-- Low political influence.
-- Internal succession tension.
-- A terminally ill house head.
-
-### Main characters
+## 7.2 Main Characters
 
 | ID | Role | Durable conflict |
 |---|---|---|
@@ -277,22 +427,20 @@ House Arven is a minor landed house with:
 | `rowen_arven` | Younger son | More capable, less legitimate, highly ambitious |
 | `beric_arven` | Edric's younger brother | Supports Rowen and seeks influence over succession |
 
-No additional named Arven character may be added before first-playable promotion.
 
-### External houses
+## 7.3 External Houses
 
 | ID | Profile | Immediate benefit | Embedded risk |
 |---|---|---|---|
 | `house_velor` | Wealthy and influential | Wealth and political protection | Succession and estate interference |
 | `house_cardin` | Smaller and comparatively neutral | Cohesion and mediation | Limited material support |
 
-No additional external house may be added before first-playable promotion.
 
 ---
 
-## CANON-06 — State Model
+# 8. State Model
 
-### House state
+## 8.1 House State
 
 The first playable MUST track:
 
@@ -303,19 +451,21 @@ The first playable MUST track:
 | `legitimacy` | integer | `0..100` | Acceptance of the current house order |
 | `influence` | integer | `0..100` | Political leverage |
 | `cohesion` | integer | `0..100` | Internal willingness to cooperate |
-| `succession_stability` | integer | `0..100` | Explicit tracked succession stability |
-| `estate_count` | integer | `>= 0` | Estates controlled by House Arven |
+| `succession_stability` | integer | `0..100` | Current succession safety |
+| `estate_count` | integer | `>= 0` | Estates controlled by the house |
 | `action_points` | integer | `0..2` | Remaining actions this turn |
 | `formal_heir_id` | character ID or null | — | Publicly recognized heir |
 | `current_head_id` | character ID | — | Current house head |
 | `turn` | integer | `1..12` | Current turn |
 | `seed` | integer | — | Reproduction seed |
+| `succession_outcome_id` | outcome ID or null | — | Resolved succession branch |
+| `terminal_result_id` | result ID or null | — | Exactly one terminal result when play ends |
 
-`succession_stability` is explicit simulation state. It MUST NOT be implemented as a display-only derived value.
+`succession_stability` is explicit state. It MUST NOT be implemented as a display-only derived value.
 
 All bounded integer values MUST be clamped after each atomic state transition.
 
-### Character state
+## 8.2 Character State
 
 Each main character MUST track:
 
@@ -325,22 +475,20 @@ Each main character MUST track:
 | `display_name` | string | Localizable |
 | `age_months` | integer | Internal age representation |
 | `alive` | bool | Life state |
-| `in_house` | bool | Membership in House Arven |
+| `in_house` | bool | Whether the character remains in House Arven |
 | `health` | integer | `0..100` |
 | `ability` | integer | `0..100` |
 | `legal_claim` | integer | `0..100` |
-| `loyalty` | integer or null | `0..100`; null where not applicable |
+| `loyalty` | integer or null | `0..100`; null when not applicable |
 | `ambition` | integer | `0..100` |
 | `role` | stable role ID | Current position |
-| `known_secrets` | collection | Stable secret IDs |
+| `known_secrets` | set or list | Stable secret IDs |
 
-`is_formal_heir` MUST be derived from `formal_heir_id`, not stored as an independent source of truth.
+## 8.3 Relationships
 
-### Relationships
+Relationships MUST use stable unordered pair keys.
 
-Relationships MUST use stable unordered character-pair keys.
-
-The first playable MUST track at least:
+The first playable MUST track:
 
 ```text
 edric_arven <-> aldren_arven
@@ -354,7 +502,7 @@ aldren_arven <-> rowen_arven
 
 Relationship values are integers clamped to `0..100`.
 
-### Scenario flags
+## 8.4 Scenario Flags
 
 The first playable MUST support:
 
@@ -373,9 +521,9 @@ regency_active
 
 ---
 
-## CANON-07 — Initial Fixture
+# 9. Initial Fixture
 
-### House values
+## 9.1 House State
 
 | Field | Value |
 |---|---:|
@@ -391,7 +539,7 @@ regency_active
 | `turn` | 1 |
 | `action_points` | 2 |
 
-### Character values
+## 9.2 Character Values
 
 Ages MUST be stored in months.
 
@@ -403,7 +551,7 @@ Ages MUST be stored in months.
 | `rowen_arven` | 16 years | 80 | 45 | 70 | 50 | 80 |
 | `beric_arven` | 49 years | 65 | 40 | 65 | 45 | 75 |
 
-### Relationship values
+## 9.3 Relationship Values
 
 | Pair | Value |
 |---|---:|
@@ -415,7 +563,7 @@ Ages MUST be stored in months.
 | Beric–Rowen | 75 |
 | Aldren–Rowen | 45 |
 
-### Initial flags
+## 9.4 Initial Flags
 
 ```text
 marriage_partner_house_id = null
@@ -428,11 +576,13 @@ civil_war_active = false
 civil_war_resolved = false
 losing_claimant_id = null
 regency_active = false
+succession_outcome_id = null
+terminal_result_id = null
 ```
 
 ---
 
-## CANON-08 — Turn State Machine
+# 10. Turn State Machine
 
 Each turn MUST execute in this order:
 
@@ -446,15 +596,16 @@ Each turn MUST execute in this order:
 7. ADVANCE_TURN
 ```
 
-### Turn start
+## 10.1 Turn Start
 
 At `TURN_START`:
 
 - Set `action_points = 2`.
-- Clear the set of actions used during the current turn.
-- Present current state and any known fixed event.
+- Clear the actions-used set for the current turn.
+- Present current state.
+- Present any known upcoming fixed event.
 
-### Player actions
+## 10.2 Player Actions
 
 During `PLAYER_ACTIONS`:
 
@@ -464,23 +615,23 @@ During `PLAYER_ACTIONS`:
 - Invalid actions MUST be disabled or rejected without changing state.
 - Action effects MUST be atomic.
 
-### Event choices
+## 10.3 Event Choice Cost
 
 Choices inside fixed or conditional events do not consume action points.
 
-### End-of-turn upkeep
+## 10.4 Upkeep
 
 At `END_OF_TURN_UPKEEP`:
 
 - Add six months to every living character's `age_months`.
-- Do not apply random death in the first playable.
+- Do not apply random death.
 - Do not apply unspecified random health changes.
-- If `debt > 0` and the turn is even, increase `debt` by `2`.
+- If `debt > 0` and the current turn is even, increase debt by `2`.
 - Clamp bounded values.
 
 Edric's turn-6 death occurs before turn-6 upkeep.
 
-### Terminal checks
+## 10.5 Terminal Checks
 
 Immediate defeat checks run after every action, event resolution, and upkeep.
 
@@ -488,18 +639,18 @@ Final victory evaluation runs only during turn 12 after upkeep and after immedia
 
 ---
 
-## CANON-09 — Player Actions
+# 11. Player Actions
 
-All values in this section are canonical first-balance values.
+All listed values are canonical first-balance values.
 
-### `educate_aldren`
+## 11.1 `educate_aldren`
 
 Preconditions:
 
 ```text
 Edric alive
 wealth >= 5
-action not used this turn
+not used this turn
 ```
 
 Effects:
@@ -512,14 +663,14 @@ Aldren legal_claim +3
 Edric–Aldren relationship +5
 ```
 
-### `educate_rowen`
+## 11.2 `educate_rowen`
 
 Preconditions:
 
 ```text
 Edric alive
 wealth >= 5
-action not used this turn
+not used this turn
 ```
 
 Effects:
@@ -533,13 +684,13 @@ Rowen ambition +3
 Aldren–Rowen relationship -3
 ```
 
-### `appease_beric`
+## 11.3 `appease_beric`
 
 Preconditions:
 
 ```text
 wealth >= 8
-action not used this turn
+not used this turn
 ```
 
 Effects:
@@ -552,14 +703,14 @@ cohesion +6
 influence -2
 ```
 
-### `negotiate_marriage`
+## 11.4 `negotiate_marriage`
 
 Preconditions:
 
 ```text
 marriage_completed == false
 wealth >= 5
-action not used this turn
+not used this turn
 ```
 
 Common effects:
@@ -570,9 +721,9 @@ wealth -5
 marriage_completed = true
 ```
 
-The player MUST choose exactly one partner.
+The player MUST choose one partner.
 
-#### Velor marriage
+### Velor
 
 ```text
 marriage_partner_house_id = house_velor
@@ -582,7 +733,7 @@ legitimacy +5
 velor_intervention_risk = true
 ```
 
-#### Cardin marriage
+### Cardin
 
 ```text
 marriage_partner_house_id = house_cardin
@@ -591,14 +742,14 @@ cohesion +8
 succession_stability +5
 ```
 
-### `investigate_secret`
+## 11.5 `investigate_secret`
 
 Preconditions:
 
 ```text
 beric_secret_known == false
 wealth >= 6
-action not used this turn
+not used this turn
 ```
 
 Effects:
@@ -610,13 +761,7 @@ beric_secret_known = true
 Beric–current head relationship -5
 ```
 
-### `reorganize_estate`
-
-Precondition:
-
-```text
-action not used this turn
-```
+## 11.6 `reorganize_estate`
 
 Effects:
 
@@ -626,15 +771,15 @@ wealth +10
 cohesion -3
 ```
 
-### `reconcile_brothers`
+## 11.7 `reconcile_brothers`
 
 Preconditions:
 
 ```text
 influence >= 5
-Aldren alive and in House Arven
-Rowen alive and in House Arven
-action not used this turn
+Aldren alive and in house
+Rowen alive and in house
+not used this turn
 ```
 
 Effects:
@@ -647,7 +792,7 @@ cohesion +4
 Rowen ambition -2
 ```
 
-### `declare_heir`
+## 11.8 `declare_heir`
 
 Preconditions:
 
@@ -655,7 +800,7 @@ Preconditions:
 Edric alive
 heir_declaration_used == false
 influence >= 10
-action not used this turn
+not used this turn
 ```
 
 Common effects:
@@ -666,7 +811,7 @@ influence -10
 heir_declaration_used = true
 ```
 
-#### Declare Aldren
+### Declare Aldren
 
 ```text
 formal_heir_id = aldren_arven
@@ -676,7 +821,7 @@ Rowen loyalty -8
 Beric loyalty -5
 ```
 
-#### Declare Rowen
+### Declare Rowen
 
 ```text
 formal_heir_id = rowen_arven
@@ -689,13 +834,13 @@ Beric loyalty +10
 
 ---
 
-## CANON-10 — Fixed Events
+# 12. Fixed Events
 
-### Turn 2 — `debt_demand`
+## 12.1 Turn 2 — `debt_demand`
 
-This event MUST occur on turn 2.
+This event MUST occur.
 
-#### Pay now
+### Pay Now
 
 Precondition:
 
@@ -711,14 +856,14 @@ debt = max(0, debt -15)
 legitimacy +3
 ```
 
-#### Defer payment
+### Defer Payment
 
 ```text
 debt +10
 influence -5
 ```
 
-#### Request Velor support
+### Request Velor Support
 
 Precondition:
 
@@ -734,11 +879,11 @@ velor_intervention_risk = true
 succession_stability -3
 ```
 
-### Turn 4 — `brothers_conflict`
+## 12.2 Turn 4 — `brothers_conflict`
 
-The event occurs only if the Aldren–Rowen relationship is below 50 when the event phase begins.
+This event occurs only if the Aldren–Rowen relationship is below 50.
 
-#### Support Aldren
+### Support Aldren
 
 ```text
 Aldren legal_claim +5
@@ -746,7 +891,7 @@ Rowen loyalty -8
 Beric loyalty -5
 ```
 
-#### Support Rowen
+### Support Rowen
 
 ```text
 Rowen ability +5
@@ -754,7 +899,7 @@ Aldren loyalty -8
 Myra loyalty -5
 ```
 
-#### Force reconciliation
+### Force Reconciliation
 
 Precondition:
 
@@ -770,11 +915,11 @@ Aldren–Rowen relationship +8
 cohesion +3
 ```
 
-If the event condition is false, record the event as avoided and show no choice.
+If the condition is false, record the event as avoided and show no choice.
 
-### Turn 6 — `edric_death`
+## 12.3 Turn 6 — `edric_death`
 
-Edric MUST die during the turn-6 event phase regardless of health.
+Edric MUST die during the event phase regardless of health.
 
 Before succession scoring:
 
@@ -785,11 +930,11 @@ Edric role = deceased_head
 
 Run succession immediately.
 
-### Turn 8 — `post_succession_demand`
+## 12.4 Turn 8 — `post_succession_demand`
 
-Exactly one post-succession event MUST run.
+Exactly one event MUST run.
 
-Use this priority order:
+Priority:
 
 ```text
 1. decisive_civil_conflict
@@ -800,13 +945,11 @@ Use this priority order:
 6. quiet_consolidation
 ```
 
-Select the first event whose condition is true.
+## 12.5 Turn 10 — `regime_test`
 
-### Turn 10 — `regime_test`
+Exactly one event MUST run.
 
-Exactly one regime test MUST run.
-
-Use this priority order:
+Priority:
 
 ```text
 1. claimant_departure
@@ -816,22 +959,22 @@ Use this priority order:
 5. estate_success
 ```
 
-### Turn 12 — `final_judgment`
+## 12.6 Turn 12 — `final_judgment`
 
-After turn-12 upkeep:
+After upkeep:
 
 1. Run immediate defeat checks.
 2. If no defeat applies, evaluate victory.
-3. Emit exactly one terminal result ID.
-4. Show the final state and causal summary.
+3. Emit exactly one terminal result.
+4. Show final state and causal summary.
 
 ---
 
-## CANON-11 — Succession Scoring
+# 13. Succession Scoring
 
-All percentage terms use integer floor arithmetic.
+All percentage calculations use integer floor arithmetic.
 
-### Aldren score
+## 13.1 Aldren
 
 ```text
 score = 40
@@ -848,7 +991,7 @@ if Aldren–Rowen relationship >= 50:
     score += 5
 ```
 
-### Rowen score
+## 13.2 Rowen
 
 ```text
 score = 20
@@ -865,7 +1008,7 @@ if Rowen ambition >= 75:
     score += 5
 ```
 
-### Beric modifier
+## 13.3 Beric Modifier
 
 Apply exactly one branch:
 
@@ -885,9 +1028,9 @@ else:
     no modifier
 ```
 
-### Tie-breaker
+## 13.4 Tie-Breaker
 
-When scores are equal:
+If scores are equal:
 
 1. The formal heir wins.
 2. If no valid formal heir exists, Aldren wins by primogeniture.
@@ -896,11 +1039,11 @@ The tie-breaker does not prevent a civil-war outcome.
 
 ---
 
-## CANON-12 — Succession Resolution
+# 14. Succession Resolution
 
-Evaluate `succession_civil_war` before all other outcomes.
+Evaluate civil war first.
 
-### Civil war
+## 14.1 `succession_civil_war`
 
 Condition:
 
@@ -912,7 +1055,7 @@ and cohesion < 35
 Effects:
 
 ```text
-outcome_id = succession_civil_war
+succession_outcome_id = succession_civil_war
 civil_war_occurred = true
 civil_war_active = true
 civil_war_resolved = false
@@ -920,13 +1063,13 @@ wealth -20
 influence -10
 ```
 
-Set the provisional house head to the score winner using the tie-breaker in `CANON-11`.
+Set the provisional house head to the score winner using the tie-breaker.
 
 Set the other brother as `losing_claimant_id`.
 
-The civil war MUST be resolved or lost during the turn-8 decisive conflict.
+The civil war MUST be resolved or lost during turn 8.
 
-### Stable Aldren succession
+## 14.2 `stable_aldren`
 
 Condition:
 
@@ -939,7 +1082,7 @@ and cohesion >= 40
 Effects:
 
 ```text
-outcome_id = stable_aldren
+succession_outcome_id = stable_aldren
 current_head_id = aldren_arven
 losing_claimant_id = rowen_arven
 legitimacy +10
@@ -947,7 +1090,7 @@ succession_stability +15
 Rowen loyalty -5
 ```
 
-### Unstable Aldren succession
+## 14.3 `unstable_aldren`
 
 Condition:
 
@@ -959,7 +1102,7 @@ and stable_aldren conditions are false
 Effects:
 
 ```text
-outcome_id = unstable_aldren
+succession_outcome_id = unstable_aldren
 current_head_id = aldren_arven
 losing_claimant_id = rowen_arven
 succession_stability -5
@@ -967,7 +1110,7 @@ Rowen ambition +10
 Beric loyalty -10
 ```
 
-### Agreed Rowen succession
+## 14.4 `agreed_rowen`
 
 Condition:
 
@@ -981,13 +1124,13 @@ and Aldren loyalty >= 45
 Effects:
 
 ```text
-outcome_id = agreed_rowen
+succession_outcome_id = agreed_rowen
 current_head_id = rowen_arven
 losing_claimant_id = aldren_arven
 legitimacy -5
 ```
 
-### Contested Rowen succession
+## 14.5 `contested_rowen`
 
 Condition:
 
@@ -999,14 +1142,14 @@ and agreed_rowen conditions are false
 Effects:
 
 ```text
-outcome_id = contested_rowen
+succession_outcome_id = contested_rowen
 current_head_id = rowen_arven
 losing_claimant_id = aldren_arven
 legitimacy -15
 cohesion -15
 ```
 
-### Common succession updates
+## 14.6 Common Succession Updates
 
 After any non-civil-war succession:
 
@@ -1014,13 +1157,13 @@ After any non-civil-war succession:
 - Set the losing brother's role to `claimant`.
 - Set `formal_heir_id = null`.
 - Keep both brothers in House Arven unless a later event removes one.
-- Store a complete succession explanation record.
+- Store the full score explanation for the succession screen.
 
 ---
 
-## CANON-13 — Turn-8 Post-Succession Events
+# 15. Turn-8 Post-Succession Events
 
-### `decisive_civil_conflict`
+## 15.1 `decisive_civil_conflict`
 
 Condition:
 
@@ -1029,7 +1172,7 @@ civil_war_active == true
 and civil_war_resolved == false
 ```
 
-#### Buy a settlement
+### Buy a Settlement
 
 Precondition:
 
@@ -1048,7 +1191,7 @@ civil_war_resolved = true
 losing claimant loyalty +10
 ```
 
-#### Grant a power share
+### Grant a Power Share
 
 Precondition:
 
@@ -1067,16 +1210,14 @@ civil_war_active = false
 civil_war_resolved = true
 ```
 
-#### Refuse compromise
-
-Immediate effects:
+### Refuse Compromise
 
 ```text
 cohesion -10
 legitimacy -10
 ```
 
-Deterministic resolution:
+Then resolve:
 
 ```text
 if current head ability + current head legal_claim
@@ -1088,7 +1229,7 @@ else:
     estate_count = 0
 ```
 
-### `velor_estate_claim`
+## 15.2 `velor_estate_claim`
 
 Condition:
 
@@ -1098,7 +1239,7 @@ and marriage_partner_house_id == house_velor
 and succession_stability < 40
 ```
 
-#### Recognize partial rights
+### Recognize Partial Rights
 
 ```text
 wealth +10
@@ -1107,7 +1248,7 @@ legitimacy -10
 succession_stability -5
 ```
 
-#### Pay compensation
+### Pay Compensation
 
 Precondition:
 
@@ -1123,14 +1264,14 @@ legitimacy +5
 velor_intervention_risk = false
 ```
 
-#### Reject the claim
+### Reject the Claim
 
 ```text
 influence -10
 velor_intervention_risk = true
 ```
 
-### `beric_regency_demand`
+## 15.3 `beric_regency_demand`
 
 Condition:
 
@@ -1139,7 +1280,7 @@ current head age_months < 240
 and Beric loyalty < 60
 ```
 
-#### Accept regency
+### Accept Regency
 
 ```text
 regency_active = true
@@ -1148,7 +1289,7 @@ Beric loyalty +10
 influence -5
 ```
 
-#### Reject regency
+### Reject Regency
 
 ```text
 cohesion -10
@@ -1156,7 +1297,7 @@ Beric loyalty -15
 legitimacy +5
 ```
 
-#### Use the secret
+### Use the Secret
 
 Precondition:
 
@@ -1173,18 +1314,18 @@ influence -5
 cohesion -5
 ```
 
-### `losing_brother_demand`
+## 15.4 `losing_brother_demand`
 
 Condition:
 
 ```text
 losing claimant exists
-and losing claimant alive
-and losing claimant in_house
+and losing claimant alive == true
+and losing claimant in_house == true
 and losing claimant loyalty < 45
 ```
 
-#### Share estate income
+### Share Estate Income
 
 ```text
 wealth -10
@@ -1192,7 +1333,7 @@ losing claimant loyalty +15
 cohesion +5
 ```
 
-#### Grant court office
+### Grant Court Office
 
 ```text
 influence -8
@@ -1200,7 +1341,7 @@ losing claimant loyalty +10
 losing claimant ambition +5
 ```
 
-#### Refuse
+### Refuse
 
 ```text
 legitimacy +3
@@ -1208,7 +1349,7 @@ losing claimant loyalty -15
 succession_stability -8
 ```
 
-### `cardin_mediation`
+## 15.5 `cardin_mediation`
 
 Condition:
 
@@ -1216,7 +1357,7 @@ Condition:
 marriage_partner_house_id == house_cardin
 ```
 
-Automatic effects:
+Effects:
 
 ```text
 cohesion +8
@@ -1224,9 +1365,9 @@ succession_stability +8
 influence -3
 ```
 
-### `quiet_consolidation`
+## 15.6 `quiet_consolidation`
 
-Fallback automatic effects:
+Fallback effects:
 
 ```text
 legitimacy +3
@@ -1235,17 +1376,15 @@ succession_stability +5
 
 ---
 
-## CANON-14 — Turn-10 Regime Tests
+# 16. Turn-10 Regime Tests
 
-Select exactly one branch in priority order.
-
-### `claimant_departure`
+## 16.1 `claimant_departure`
 
 Condition:
 
 ```text
 losing claimant exists
-and losing claimant in_house
+and losing claimant in_house == true
 and losing claimant loyalty <= 20
 ```
 
@@ -1257,9 +1396,7 @@ cohesion -10
 succession_stability -10
 ```
 
-Run immediate defeat checks after removal.
-
-### `velor_pressure`
+## 16.2 `velor_pressure`
 
 Condition:
 
@@ -1267,7 +1404,7 @@ Condition:
 velor_intervention_risk == true
 ```
 
-#### Concede revenue
+### Concede Revenue
 
 ```text
 wealth -15
@@ -1275,7 +1412,7 @@ velor_intervention_risk = false
 succession_stability +5
 ```
 
-#### Resist politically
+### Resist Politically
 
 Precondition:
 
@@ -1291,13 +1428,13 @@ legitimacy +5
 velor_intervention_risk = false
 ```
 
-#### Fail to answer
+### Fail to Answer
 
 ```text
 estate_count = 0
 ```
 
-### `kin_revolt`
+## 16.3 `kin_revolt`
 
 Condition:
 
@@ -1313,7 +1450,7 @@ legitimacy -10
 succession_stability -10
 ```
 
-### `tax_resistance`
+## 16.4 `tax_resistance`
 
 Condition:
 
@@ -1330,7 +1467,7 @@ debt +5
 legitimacy -5
 ```
 
-### `estate_success`
+## 16.5 `estate_success`
 
 Fallback effects:
 
@@ -1342,9 +1479,9 @@ succession_stability +5
 
 ---
 
-## CANON-15 — Victory and Defeat
+# 17. Victory and Defeat
 
-### Eligible next heir
+## 17.1 Eligible Next Heir
 
 An eligible next heir MUST:
 
@@ -1352,13 +1489,12 @@ An eligible next heir MUST:
 - Be in House Arven.
 - Not be the current house head.
 - Have `legal_claim >= 1`.
-- Be a canon-approved close Arven relative.
 
-In the locked first playable, only the surviving non-head brother can qualify.
+In the locked first playable, only the surviving non-head brother can satisfy this rule.
 
-### Immediate defeat priority
+## 17.2 Immediate Defeat Priority
 
-Evaluate in this order and select the first matching result:
+Evaluate in this order:
 
 ```text
 1. defeat_estate_lost
@@ -1375,7 +1511,7 @@ defeat_estate_lost:
     estate_count <= 0
 
 defeat_insolvent:
-    wealth <= -30
+    wealth <= -10
 
 defeat_legitimacy_collapse:
     legitimacy <= 0
@@ -1387,87 +1523,114 @@ defeat_unresolved_civil_war:
     turn == 12 and civil_war_active == true
 ```
 
-### Basic victory
+> **Balance revision (2026-07-16, canon 0.4 → 0.4.1):** `defeat_insolvent` threshold revised from `wealth <= -30` to `wealth <= -10` under Mutable Balance (23.2).
+> Cause: every action requires wealth at least equal to its cost, so actions cannot drive wealth below 0; the only unconditional wealth-reducing events are `succession_civil_war` (−20), `share_income` (−10), `concede_revenue` (−15), `kin_revolt` (−10), and `tax_resistance` (−10), and the civil-war prerequisite `cohesion < 35` forces at least four `reorganize_estate` uses (+40 wealth). The maximum legal drain therefore cannot reach −30; a 120-run varied-strategy batch measured a minimum final wealth of −2. With the revised threshold, `defeat_insolvent` is legally reachable (regression script `S9_defeat_insolvent` in `tests/validate.gd`).
 
-At the end of turn 12, victory requires:
+## 17.3 Basic Victory
+
+At the end of turn 12:
 
 ```text
-current head alive
+current head alive == true
 estate_count >= 1
-eligible next heir exists
+an eligible next heir exists
 legitimacy >= 1
 wealth > -20
 civil_war_active == false
 ```
 
-### Victory classification
+## 17.4 Victory Classification
 
-Select exactly one result using this priority.
+Select exactly one result and store it in `terminal_result_id`.
 
-#### `victory_blood_bought`
+Priority:
+
+### `victory_blood_bought`
 
 ```text
 civil_war_occurred == true
-civil_war_resolved == true
-basic victory == true
+and civil_war_resolved == true
+and basic victory is true
 ```
 
-#### `victory_stable_succession`
+### `victory_stable_succession`
 
 ```text
 legitimacy >= 65
-cohesion >= 60
-succession_stability >= 65
-wealth >= 40
-basic victory == true
+and cohesion >= 60
+and succession_stability >= 65
+and wealth >= 40
+and basic victory is true
 ```
 
-#### `victory_fragile_survival`
+### `victory_fragile_survival`
 
 ```text
-basic victory == true
+basic victory is true
 ```
-
-Exactly one terminal result MUST be emitted.
 
 ---
 
-## CANON-16 — UI and Chronicle Contract
+# 18. UI Contract
 
-### Required screens
-
-The first playable MUST contain:
+## 18.1 Required Screens
 
 ```text
 Start Screen
-Play Screen
+House Office Screen
+Family Council Screen
 Succession Resolution Screen
+Genealogy View
 End Screen
 ```
 
-### Start Screen
+## 18.2 Start Screen
 
 Required controls:
 
 - New Game.
 - Quit.
 
-### Play Screen
+## 18.3 House Office Screen
 
-The screen MUST expose:
+The house office is the default play surface.
+
+It MUST expose:
 
 - Current turn and half-year.
 - Remaining action points.
 - Current head.
 - Formal heir.
-- Main character list.
+- Main character status.
 - House state.
-- Current event and choices.
+- Current preparation focus and important prior choices.
+- Pending obligation or threat.
 - Available actions.
+- Known action costs and direct effects.
+- Disabled-action reasons.
 - End Turn.
 - Recent chronicle entries.
+- Access to genealogy.
 
-### Succession Resolution Screen
+It MUST feel like the operating center of House Arven rather than a generic debug or analytics dashboard.
+
+## 18.4 Family Council Screen
+
+Important family dilemmas MUST use a character-centered council scene.
+
+For the locked scenario, the turn-4 brothers' conflict and applicable turn-8 family conflict MUST use this presentation. Other important dilemmas MAY use it when doing so does not duplicate a dedicated succession or end screen.
+
+The scene MUST expose:
+
+- The affected characters.
+- Each participant's position or demand.
+- The known emotional and political stakes.
+- Available choices and their known direct costs.
+- A clear return to the house office after resolution.
+
+A major family dilemma MUST NOT be presented only as a minor notification popup.
+
+## 18.5 Succession Screen
 
 The screen MUST expose:
 
@@ -1477,13 +1640,32 @@ The screen MUST expose:
 - Tie-breaker if used.
 - Beric modifier.
 - Selected succession outcome.
+- New or provisional house head.
+- Losing claimant.
 - Immediate state changes.
 
-### End Screen
+## 18.6 Genealogy View
+
+The genealogy view is a supporting tool and MUST be reachable from the house office.
+
+For the locked cast, it MUST show:
+
+- Edric and Myra as parents of Aldren and Rowen.
+- Beric as Edric's brother.
+- Living and deceased state.
+- Current head.
+- Formal heir.
+- Losing claimant when applicable.
+- Marriage affiliation when applicable.
+
+It MUST NOT replace the house office as the primary play surface.
+
+## 18.7 End Screen
 
 The screen MUST expose:
 
-- Terminal result ID and localized title.
+- Terminal result ID.
+- Localized result title.
 - Victory class or defeat cause.
 - Final house state.
 - Succession outcome.
@@ -1491,18 +1673,20 @@ The screen MUST expose:
 - Seed.
 - Restart control.
 
-### Chronicle
+---
 
-Each chronicle entry MUST include:
+# 19. Chronicle Contract
+
+Chronicle entries MUST include:
 
 - Turn and season.
 - Actor or house.
 - Action or event.
 - Direct consequence.
 
-The chronicle is play-history evidence, not decorative prose.
+The chronicle is evidence of play history, not decorative prose.
 
-Example output:
+Example:
 
 ```text
 Year 1, Spring
@@ -1520,9 +1704,7 @@ Aldren inherited the house, but Rowen and Beric rejected a stable settlement.
 
 ---
 
-## CANON-17 — Determinism and Promotion Gate
-
-### Determinism
+# 20. Determinism
 
 The implementation MUST satisfy:
 
@@ -1538,16 +1720,22 @@ same canon version
 Requirements:
 
 - Use one controlled RNG stream if randomness is introduced.
-- Succession itself MUST remain deterministic.
+- Succession MUST remain deterministic.
 - Do not use system time as gameplay input.
 - Do not call network services.
-- Record the seed on the End Screen.
-- Core rules MUST be callable without rendering the UI.
+- Record the seed on the end screen.
+- Core rules MUST run without rendering the UI.
 - UI nodes MUST NOT be the source of truth for simulation state.
 
-### Required reachable outcomes
+---
 
-Automated or scripted legal play paths MUST prove that the following are reachable from the default fixture:
+# 21. First-Playable Acceptance
+
+The first playable is technically complete only when the canonical initial fixture executes the locked scenario contracts through the real game flow, including the house office, family council, succession resolution, genealogy support, and terminal result.
+
+## 21.1 Required Reachability
+
+Legal scripted runs beginning from the canonical initial fixture MUST prove reachability of:
 
 - `stable_aldren`.
 - `unstable_aldren`.
@@ -1556,100 +1744,111 @@ Automated or scripted legal play paths MUST prove that the following are reachab
 - At least two victory result IDs.
 - At least three defeat result IDs.
 
-### Automated validation
+Resolver-only tests built from impossible mid-game states do not satisfy this reachability requirement.
 
-The first playable MUST support at least 100 automated complete runs with:
+## 21.2 Required Automated Validation
 
-- No crash.
+At least 100 varied legal complete runs MUST finish with:
+
+- No crash or unresolved input state.
 - No invalid state transition.
-- No bounded value outside `0..100` after clamping.
-- Exactly one terminal result per run.
-- Reproducible repeated identical runs.
-- Succession explanation matching applied score calculations.
+- All bounded values clamped to `0..100`.
+- Exactly one `terminal_result_id` per completed run.
+- Termination no later than turn 12.
+- Reproducible state history for identical inputs.
+- Succession evidence equal to the modifiers actually applied.
 
-### Human promotion gate
+## 21.3 Human Promotion Gate
 
-Technical completion does not authorize scope expansion.
+Technical completion does not authorize scope expansion. Human play review MUST evaluate:
 
-A human play review MUST answer with observed evidence:
-
-1. Does choosing between Aldren and Rowen create a real dilemma?
+1. Does choosing between Aldren and Rowen create a real family dilemma?
 2. Does the known turn-6 death create preparation pressure?
 3. Do two action points force meaningful sacrifice?
-4. Does the succession result feel causally connected to prior choices?
+4. Does succession feel causally connected to prior choices?
 5. Are marriage and kin management both useful and dangerous?
-6. Does the player feel responsible for a house rather than a spreadsheet?
-7. Does failure create a desire to retry with another strategy?
+6. Is the house office understandable and does it feel like operating a dynasty rather than reading a spreadsheet?
+7. Does the family council make the conflict feel centered on people rather than on a generic event popup?
+8. Does failure create a desire to retry with another family strategy?
 
-Promotion requires positive evidence for questions 1, 3, 4, and 7.
+Promotion requires positive evidence for questions 1, 3, 4, 6, 7, and 8.
 
-If the gate fails, revise the existing loop or reconsider the project. Do not add major systems to compensate.
+If the gate fails, revise the locked loop or reconsider the project. Do not add major systems to compensate.
 
 ---
 
-## CANON-18 — Mutable Balance vs. Protected Meaning
+# 22. Scope Lock Before Promotion
 
-### Protected meaning
+Before the human promotion gate passes, the project MUST NOT implement:
 
-Changing any item below requires an explicit canon-change task:
+- The full multi-generation campaign.
+- Generated descendants or additional named Arven characters.
+- Branch-house simulation.
+- The social-rank progression ladder.
+- Dynasty-legacy scoring.
+- A generalized long-campaign dilemma generator.
+- A world map.
+- Warfare.
+- Armies.
+- Tactical combat.
+- City building.
+- Trade networks.
+- Religion simulation.
+- Culture simulation.
+- Technology trees.
+- Additional named houses.
+- Full character-life simulation.
+- Rule editors.
+- Content editors.
+- Mod support.
+- Multiplayer.
+- Mobile targets.
+- Console targets.
+- Steam achievements.
+- Steam cloud saves.
+- Final art production.
+- Voice acting.
+- Runtime generative AI.
+- Free-text negotiation.
 
-- Commercial single-player dynastic survival identity.
-- Godot 4 and GDScript runtime.
-- Offline runtime with no external LLM.
-- House continuity as the player role.
-- Succession as the central resolution system.
-- The 12-turn first playable.
-- Two actions per turn.
-- Mandatory Edric death on turn 6.
-- Aldren as the lawful but weaker candidate.
-- Rowen as the stronger but less legitimate candidate.
-- Beric as the pro-Rowen internal actor.
-- Velor as high-benefit interference risk.
-- Cardin as lower-benefit stabilizer.
-- Explainable deterministic succession.
-- Scope lock in `CANON-03`.
-- Promotion gate in `CANON-17`.
+Sections 3 and 4 define the future product direction only. They MUST guide first-playable architecture and presentation but MUST NOT expand the current implementation beyond the locked scenario.
 
-### Mutable balance values
+Temporary UI, placeholder portraits, placeholder heraldry, basic fonts, and minimal audio are allowed only when they support first-playable validation and have safe commercial-use provenance.
 
-A dedicated balance task MAY change:
+---
+
+# 23. Canon Change Boundary
+
+## 23.1 Protected Meaning
+
+The following contracts are protected and require an explicit canon revision to change:
+
+- Product identity, emotional priority, player role, and runtime platform in Section 1.
+- Design invariants in Section 2.
+- Long-campaign direction and completion priorities in Section 3.
+- House-office, family-council, and genealogy hierarchy in Section 4.
+- The locked first-playable role and structure in Section 5.
+- Canonical IDs and character or house roles in Sections 6 and 7.
+- State semantics, fixture meaning, and turn ordering in Sections 8–10.
+- The meaning and ordering of actions, events, succession, and terminal resolution in Sections 11–17.
+- UI, chronicle, and determinism contracts in Sections 18–20.
+- The human promotion gate and pre-promotion scope lock in Sections 21 and 22.
+
+## 23.2 Mutable Balance
+
+Dedicated balance work MAY change:
 
 - Initial numeric values.
-- Action costs.
-- Action effect magnitudes.
-- Succession weights.
-- Thresholds.
+- Costs and effect magnitudes.
+- Succession weights and thresholds.
 - Event effect magnitudes.
-- Target pacing within the locked turn count.
-- UI layout and presentation.
+- Pacing inside the locked 12-turn structure.
+- Full-campaign generation count.
+- Social-rank thresholds.
+- Dynasty-legacy category weights.
+- Dilemma selection weights and frequency.
+- UI layout and presentation within the protected hierarchy.
 - Chronicle wording.
 
-A balance change MUST preserve protected meaning and MUST include reproducible simulation or human-play evidence.
+Balance changes MUST preserve protected meaning and include reproducible simulation or human-play evidence.
 
----
-
-## CANON-19 — Post-Promotion Expansion Order
-
-After the first playable passes the human promotion gate, expand one player value at a time.
-
-Preferred candidate order:
-
-1. A second succession generation.
-2. Actual marriage partners and descendants.
-3. Persistent inter-house relationships and inherited grudges.
-4. Loss of status followed by recovery.
-5. Limited regional politics.
-6. Multiple starting houses.
-7. Long-run victory objectives.
-
-Do not increase world scale before the single-house choice loop remains understandable and replayable across multiple generations.
-
----
-
-## CANON-20 — Final Boundary
-
-Every feature MUST strengthen this product definition:
-
-> A complete dynastic survival strategy game in which the player directly shapes succession, marriage, family relationships, decline, and recovery, and sees those consequences persist across generations.
-
-A feature that does not strengthen this definition is out of scope.
