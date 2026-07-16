@@ -114,8 +114,8 @@ func eligible_next_heir_id() -> String:
 
 func snapshot_string() -> String:
 	var parts: PackedStringArray = PackedStringArray()
-	parts.append("T%d P%s W%d D%d L%d I%d C%d S%d E%d AP%d H%s FH%s SO%s TR%s" % [
-		turn, phase, wealth, debt, legitimacy, influence, cohesion,
+	parts.append("T%d P%s SEED%d W%d D%d L%d I%d C%d S%d E%d AP%d H%s FH%s SO%s TR%s" % [
+		turn, phase, seed_value, wealth, debt, legitimacy, influence, cohesion,
 		succession_stability, estate_count, action_points,
 		current_head_id, formal_heir_id, succession_outcome_id, terminal_result_id])
 	var cids: Array = characters.keys()

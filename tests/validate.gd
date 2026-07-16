@@ -482,17 +482,26 @@ func weighted_index(rng: RandomNumberGenerator, legal: Array, profile: int) -> i
 func test_batch_runs() -> void:
 	var dist := {}
 	var outcome_dist := {}
+	var strategy_signatures := {}
+	var profile_counts := {}
 	var min_wealth := 999
 	for seed_value in range(1, 121):
-		var s := policy_run(seed_value)
+		var input_log: Array = []
+		var s := policy_run(seed_value, input_log)
 		check(s.terminal_result_id != "", "batch %d: no terminal result" % seed_value)
 		check(s.turn <= 12, "batch %d: exceeded turn 12" % seed_value)
 		check(s.phase == SimState.PHASE_OVER, "batch %d: not in OVER phase" % seed_value)
 		dist[s.terminal_result_id] = int(dist.get(s.terminal_result_id, 0)) + 1
 		if s.succession_outcome_id != "":
 			outcome_dist[s.succession_outcome_id] = int(outcome_dist.get(s.succession_outcome_id, 0)) + 1
+		strategy_signatures[str(input_log)] = true
+		var profile := seed_value % 6
+		profile_counts[profile] = int(profile_counts.get(profile, 0)) + 1
 		min_wealth = mini(min_wealth, s.wealth)
 		render_chronicle_both_locales(s, "batch %d" % seed_value)
+	check(strategy_signatures.size() >= 100,
+		"batch: fewer than 100 distinct legal input histories (%d)" % strategy_signatures.size())
+	check(profile_counts.size() == 6, "batch: not all six strategy profiles ran")
 	print("")
 	print("=== 120-run outcome distribution ===")
 	var keys: Array = dist.keys()
@@ -500,6 +509,8 @@ func test_batch_runs() -> void:
 	for k in keys:
 		print("  %s: %d" % [k, dist[k]])
 	print("  succession outcomes: " + str(outcome_dist))
+	print("  distinct legal input histories: %d" % strategy_signatures.size())
+	print("  strategy profile counts: " + str(profile_counts))
 	print("  min final wealth: %d" % min_wealth)
 
 # ---------------------------------------------------------------- determinism
@@ -518,6 +529,10 @@ func test_determinism() -> void:
 			"determinism: replay of seed %d diverged from original" % seed_value)
 		check(str(s1.history) == str(s3.history),
 			"determinism: replay of seed %d state history mismatch" % seed_value)
+		check(str(s1.chronicle) == str(s3.chronicle),
+			"determinism: replay of seed %d chronicle mismatch" % seed_value)
+		check(str(s1.succession_evidence) == str(s3.succession_evidence),
+			"determinism: replay of seed %d succession evidence mismatch" % seed_value)
 
 # 기록된 입력 로그를 그대로 재생한다.
 func replay_log(seed_value: int, steps_log: Array) -> SimState:
