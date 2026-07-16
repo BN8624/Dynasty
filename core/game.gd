@@ -17,6 +17,23 @@ const SCENES := {
 	"end": "res://ui/end_screen.tscn",
 }
 
+# 내보낸 빌드 검증용: `--verify-office` 사용자 인자로 실행하면 새 게임이
+# 집무실에 도달하는지 확인하고 결과를 출력한 뒤 종료한다. 일반 플레이에는 관여하지 않는다.
+func _ready() -> void:
+	if "--verify-office" in OS.get_cmdline_user_args():
+		_verify_office()
+
+func _verify_office() -> void:
+	await get_tree().process_frame
+	new_game()
+	goto("office")
+	for i in range(5):
+		await get_tree().process_frame
+	var cs := get_tree().current_scene
+	var ok: bool = cs != null and cs.name == "HouseOffice" and state.turn == 1 and state.action_points == 2
+	print("VERIFY_OFFICE_RESULT: %s (scene=%s)" % ["PASS" if ok else "FAIL", cs.name if cs != null else "<none>"])
+	get_tree().quit(0 if ok else 1)
+
 func new_game() -> void:
 	state = Rules.new_game(next_seed)
 	next_seed += 1
